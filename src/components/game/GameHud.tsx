@@ -2,11 +2,12 @@ import { Link } from 'wouter';
 
 type GameHudProps = {
   playerHealth: number;
-  enemyHealth: number;
-  showDamage: boolean;
+  enemyHealth: number | null;
+  room: number;
+  shownDamage: number | null;
 };
 
-export function GameHud({ playerHealth, enemyHealth, showDamage }: GameHudProps) {
+export function GameHud({ playerHealth, enemyHealth, room, shownDamage }: GameHudProps) {
   return (
     <>
       <div className="game-hud">
@@ -17,11 +18,12 @@ export function GameHud({ playerHealth, enemyHealth, showDamage }: GameHudProps)
           <div className="health"><span style={{ width: `${playerHealth}%` }} /></div>
         </div>
       </div>
-      <div className="enemy-status">
-        <strong>СТРАЖ ВОРОТ</strong>
+      {enemyHealth !== null && <div className="enemy-status">
+        <strong>БЛИЖАЙШИЙ СТРАЖ</strong>
         <div className="enemy-health"><span style={{ width: `${enemyHealth}%` }} /></div>
-      </div>
-      {showDamage && <div className="damage-number">−25</div>}
+      </div>}
+      <div className="room-counter">КОМНАТА {room} / 8</div>
+      {shownDamage !== null && <div className="damage-number">−{shownDamage}</div>}
     </>
   );
 }

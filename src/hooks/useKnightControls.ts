@@ -2,9 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 const WALK_SPEED = 360;
 const VERTICAL_SPEED = 42;
-const MAX_WORLD_X = 2450;
 
-export function useKnightControls(onStrike: (worldX: number, y: number) => void) {
+export function useKnightControls(onStrike: (worldX: number, y: number) => void, maxWorldX: number, worldWidth: number) {
   const [worldX, setWorldX] = useState(150);
   const [y, setY] = useState(68);
   const [facing, setFacing] = useState<1 | -1>(1);
@@ -13,8 +12,10 @@ export function useKnightControls(onStrike: (worldX: number, y: number) => void)
   const keys = useRef(new Set<string>());
   const position = useRef({ worldX, y });
   const attackLocked = useRef(false);
+  const maxXRef = useRef(maxWorldX);
 
   useEffect(() => { position.current = { worldX, y }; }, [worldX, y]);
+  useEffect(() => { maxXRef.current = maxWorldX; }, [maxWorldX]);
 
   const attack = useCallback(() => {
     if (attackLocked.current) return;
@@ -27,7 +28,7 @@ export function useKnightControls(onStrike: (worldX: number, y: number) => void)
 
   const move = useCallback((directionX: -1 | 0 | 1, directionY: -1 | 0 | 1) => {
     if (directionX) setFacing(directionX);
-    setWorldX((value) => Math.min(MAX_WORLD_X, Math.max(80, value + directionX * 35)));
+    setWorldX((value) => Math.min(maxXRef.current, Math.max(80, value + directionX * 35)));
     setY((value) => Math.min(80, Math.max(28, value + directionY * 4)));
   }, []);
 
@@ -60,7 +61,7 @@ export function useKnightControls(onStrike: (worldX: number, y: number) => void)
       setIsMoving((current) => current === moving ? current : moving);
       if (dx) {
         setFacing(dx);
-        setWorldX((value) => Math.min(MAX_WORLD_X, Math.max(80, value + dx * WALK_SPEED * seconds)));
+        setWorldX((value) => Math.min(maxXRef.current, Math.max(80, value + dx * WALK_SPEED * seconds)));
       }
       if (dy) setY((value) => Math.min(80, Math.max(28, value + dy * VERTICAL_SPEED * seconds)));
       frame = requestAnimationFrame(tick);
@@ -70,6 +71,7 @@ export function useKnightControls(onStrike: (worldX: number, y: number) => void)
   }, []);
 
   const anchor = typeof window === 'undefined' ? 300 : Math.min(window.innerWidth * 0.3, 340);
-  const cameraX = Math.max(0, worldX - anchor);
+  const viewportWidth = typeof window === 'undefined' ? 1200 : window.innerWidth;
+  const cameraX = Math.min(Math.max(0, worldX - anchor), Math.max(0, worldWidth - viewportWidth));
   return { worldX, cameraX, screenX: worldX - cameraX, y, facing, isMoving, isAttacking, attack, move };
 }

@@ -14,7 +14,7 @@ export function Knight({ screenX, y, facing, isMoving, isAttacking }: KnightProp
   ].filter(Boolean).join(' ');
 
   return (
-    <div className={className} style={{ left: screenX, top: `${y}%`, '--facing': facing, zIndex: Math.round(y) + 20 } as React.CSSProperties}>
+    <div className={className} style={{ left: screenX, top: `${y}%`, '--facing': facing, zIndex: 101 } as React.CSSProperties}>
       <div className="attack-flash" />
       <img
         className={isAttacking ? 'knight-strike' : 'knight-idle'}
