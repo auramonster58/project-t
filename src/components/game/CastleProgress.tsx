@@ -13,3 +13,13 @@ export function ExitPortal({ x, y, active }: ExitPortalProps) {
     </div>
   );
 }
+
+type CastleTrapProps = { x: number; y: number };
+
+export function CastleTrap({ x, y }: CastleTrapProps) {
+  return (
+    <div className="castle-trap" style={{ left: x, top: `${y}%` }}>
+      <span>▲▲▲</span><small>ЛОВУШКА</small>
+    </div>
+  );
+}

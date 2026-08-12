@@ -1,4 +1,5 @@
 import { Link } from 'wouter';
+import { ROOM_COUNT } from '../../lib/gameData';
 
 type GameHudProps = {
   playerHealth: number;
@@ -22,7 +23,7 @@ export function GameHud({ playerHealth, enemyHealth, room, shownDamage }: GameHu
         <strong>БЛИЖАЙШИЙ СТРАЖ</strong>
         <div className="enemy-health"><span style={{ width: `${enemyHealth}%` }} /></div>
       </div>}
-      <div className="room-counter">КОМНАТА {room} / 8</div>
+      <div className="room-counter">КОМНАТА {room} / {ROOM_COUNT}</div>
       {shownDamage !== null && <div className="damage-number">−{shownDamage}</div>}
     </>
   );

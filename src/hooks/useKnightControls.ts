@@ -3,28 +3,34 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 const WALK_SPEED = 360;
 const VERTICAL_SPEED = 42;
 
-export function useKnightControls(onStrike: (worldX: number, y: number) => void, maxWorldX: number, worldWidth: number) {
+export function useKnightControls(
+  onStrike: (worldX: number, y: number, facing: 1 | -1) => void,
+  maxWorldX: number,
+  worldWidth: number,
+  instantAttack: boolean,
+) {
   const [worldX, setWorldX] = useState(150);
   const [y, setY] = useState(68);
   const [facing, setFacing] = useState<1 | -1>(1);
   const [isMoving, setIsMoving] = useState(false);
   const [isAttacking, setIsAttacking] = useState(false);
   const keys = useRef(new Set<string>());
-  const position = useRef({ worldX, y });
+  const position = useRef({ worldX, y, facing });
   const attackLocked = useRef(false);
   const maxXRef = useRef(maxWorldX);
 
-  useEffect(() => { position.current = { worldX, y }; }, [worldX, y]);
+  useEffect(() => { position.current = { worldX, y, facing }; }, [facing, worldX, y]);
   useEffect(() => { maxXRef.current = maxWorldX; }, [maxWorldX]);
 
   const attack = useCallback(() => {
-    if (attackLocked.current) return;
-    attackLocked.current = true;
+    if (!instantAttack && attackLocked.current) return;
+    attackLocked.current = !instantAttack;
     setIsAttacking(true);
-    window.setTimeout(() => onStrike(position.current.worldX, position.current.y), 140);
-    window.setTimeout(() => setIsAttacking(false), 360);
-    window.setTimeout(() => { attackLocked.current = false; }, 460);
-  }, [onStrike]);
+    const strike = () => onStrike(position.current.worldX, position.current.y, position.current.facing);
+    if (instantAttack) strike(); else window.setTimeout(strike, 140);
+    window.setTimeout(() => setIsAttacking(false), instantAttack ? 100 : 360);
+    if (!instantAttack) window.setTimeout(() => { attackLocked.current = false; }, 460);
+  }, [instantAttack, onStrike]);
 
   const move = useCallback((directionX: -1 | 0 | 1, directionY: -1 | 0 | 1) => {
     if (directionX) setFacing(directionX);

@@ -1,13 +1,18 @@
 import type { AbilityCooldowns } from '../../hooks/useKnightAbilities';
+import type { Weapon } from '../../lib/gameCombat';
 
 type AbilityBarProps = {
   cooldowns: AbilityCooldowns;
-  damageBoosted: boolean;
+  weapon: Weapon;
+  rageActive: boolean;
+  autoAimActive: boolean;
+  healingActive: boolean;
   owlSightActive: boolean;
+  hermesActive: boolean;
   canHeal: boolean;
-  onDamage: () => void;
+  onPrimary: () => void;
   onHeal: () => void;
-  onOwlSight: () => void;
+  onUtility: () => void;
 };
 
 type AbilityButtonProps = {
@@ -33,14 +38,15 @@ function AbilityButton({ icon, hotkey, label, cooldown, active, disabled = false
 }
 
 export function AbilityBar(props: AbilityBarProps) {
+  const isSword = props.weapon === 'sword';
   return (
     <div className="ability-bar" aria-label="Способности рыцаря">
-      <AbilityButton icon="⚔" hotkey={1} label="Урон ×2" cooldown={props.cooldowns.damage}
-        active={props.damageBoosted} onUse={props.onDamage} />
+      <AbilityButton icon={isSword ? '⚔' : '◎'} hotkey={1} label={isSword ? 'Ярость' : 'Автоаим'}
+        cooldown={props.cooldowns.primary} active={isSword ? props.rageActive : props.autoAimActive} onUse={props.onPrimary} />
       <AbilityButton icon="♥" hotkey={2} label="Лечение" cooldown={props.cooldowns.heal}
-        active={false} disabled={!props.canHeal} onUse={props.onHeal} />
-      <AbilityButton icon="◉" hotkey={3} label="Зрение совы" cooldown={props.cooldowns.owlSight}
-        active={props.owlSightActive} onUse={props.onOwlSight} />
+        active={props.healingActive} disabled={!props.canHeal} onUse={props.onHeal} />
+      <AbilityButton icon={isSword ? '◉' : '➶'} hotkey={3} label={isSword ? 'Зрение совы' : 'Гермес'}
+        cooldown={props.cooldowns.utility} active={isSword ? props.owlSightActive : props.hermesActive} onUse={props.onUtility} />
     </div>
   );
 }

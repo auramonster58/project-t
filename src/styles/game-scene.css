@@ -1,12 +1,12 @@
 .game-page {
-  position: relative; width: 100vw; height: 100svh; min-height: 560px; overflow: hidden;
-  user-select: none; cursor: crosshair; color: #eee7df; background: #020203;
+  position: fixed; inset: 0; width: 100%; height: 100vh; height: 100dvh; min-height: 0; overflow: hidden;
+  user-select: none; touch-action: none; overscroll-behavior: none; cursor: crosshair; color: #eee7df; background: #020203;
 }
-.game-page::after { content: ''; position: absolute; inset: 0; z-index: 85; pointer-events: none; background: radial-gradient(circle 245px at var(--light-x) var(--light-y), #0000000d 0, #0004 48%, #000e 100%); box-shadow: inset 0 0 160px 50px #000; }
+.game-page::after { content: ''; position: absolute; inset: 0; z-index: 85; pointer-events: none; background: radial-gradient(circle 360px at var(--light-x) var(--light-y), #0000 0, #0002 55%, #000 100%); box-shadow: inset 0 0 110px 25px #000; }
 .game-page--owl-sight::after { background: #17213822; box-shadow: inset 0 0 85px #7491bd55; }
-.player-aura { position: absolute; z-index: 86; width: 210px; height: 150px; translate: -50% -72%; border-radius: 50%; pointer-events: none; background: radial-gradient(ellipse, #d9c49f30, #9e825811 48%, transparent 72%); filter: blur(8px); box-shadow: 0 0 55px #c6a87226; }
+.player-aura { position: absolute; z-index: 86; width: 290px; height: 205px; translate: -50% -72%; border-radius: 50%; pointer-events: none; background: radial-gradient(ellipse, #e0cda83d, #a78b6018 52%, transparent 76%); filter: blur(9px); box-shadow: 0 0 78px #c6a87238; }
 .scrolling-world {
-  position: absolute; inset: 0 auto 0 0; width: 9200px; height: 100%;
+  position: absolute; inset: 0 auto 0 0; height: 100%;
   will-change: transform; contain: layout paint; transform-style: preserve-3d;
 }
 .castle-interior, .castle-interior > * { position: absolute; }
@@ -28,10 +28,11 @@
 .pillar-a { left: 95px; }.pillar-b { right: 95px; }
 .room-torch { position: absolute; bottom: 20%; width: 34px; height: 42px; z-index: 3; border-radius: 50%; background: radial-gradient(circle at 50% 70%, #fff2ad, #e27528 45%, #9e2424 68%, transparent 72%); filter: drop-shadow(0 0 20px #ef7c30); animation: flame 350ms ease-in-out infinite alternate; }
 .torch-a { left: 125px; }.torch-b { right: 125px; }
-.room-door { position: absolute; top: 17%; bottom: 17%; width: 52px; z-index: 95; translate: -50% 0; background: repeating-linear-gradient(90deg, #181412 0 10px, #58402e 11px 14px); border: 5px solid #6e6559; box-shadow: 0 0 24px #000; transition: 500ms ease; }
-.room-door span { position: absolute; top: 45%; left: 50%; translate: -50% 0; width: 120px; color: #b8aa96; font-size: 10px; text-align: center; letter-spacing: .12em; }
-.room-door--open { opacity: .2; transform: translateY(-82%); pointer-events: none; }
-.castle-room--8 { background: radial-gradient(circle at 68% 55%, #6c346233, transparent 24%), radial-gradient(circle, #171d29, #090a0c 60%); }
+.room-door { position: absolute; top: 23%; bottom: 17%; width: 68px; z-index: 95; translate: -50% 0; transform-origin: 0 50%; border: 6px solid #756b5e; border-radius: 34px 34px 3px 3px; background: repeating-linear-gradient(90deg, #211711 0 12px, #5a3d29 13px 17px); box-shadow: 0 0 0 9px #171513, 0 0 28px #000; transition: 500ms ease; }
+.room-door::after { content: ''; position: absolute; right: 8px; top: 52%; width: 7px; height: 7px; border-radius: 50%; background: #c09b58; box-shadow: 0 0 5px #e2c37d; }
+.room-door span { position: absolute; top: 43%; left: 50%; translate: -50% 0; width: 120px; color: #d1c1aa; font-size: 9px; text-align: center; letter-spacing: .1em; text-shadow: 0 2px 3px #000; }
+.room-door--open { opacity: .25; transform: perspective(420px) rotateY(78deg); pointer-events: none; }
+.castle-room--10 { background: radial-gradient(circle at 68% 55%, #6c346233, transparent 24%), radial-gradient(circle, #171d29, #090a0c 60%); }
 .room-darkness { position: absolute; inset: 0; z-index: 92; display: block; background: #010102; box-shadow: inset 0 0 130px #000; }
 .game-page--owl-sight .room-darkness { opacity: .14; }
 .room-darkness::after { content: '?'; position: absolute; left: 50%; top: 50%; translate: -50% -50%; color: #242229; font: 80px Georgia, serif; text-shadow: 0 0 30px #000; }
@@ -45,15 +46,27 @@
 .knight--attacking { width: clamp(190px, 21vw, 300px); height: clamp(190px, 21vw, 300px); animation: slash 420ms cubic-bezier(.2,.8,.3,1); }
 .attack-flash { position: absolute; inset: 45% -9% 2% 22%; border: 8px solid #e7dfcf; border-left-color: transparent; border-radius: 50%; opacity: 0; filter: drop-shadow(0 0 8px #fff); z-index: 3; }
 .knight--attacking .attack-flash { animation: flash 300ms ease-out; }
+.knight--crossbow .attack-flash { display: none; }
+.knight--crossbow img { object-position: center bottom; mix-blend-mode: lighten; }
+.knight--crossbow.knight--attacking { width: clamp(125px, 14vw, 205px); height: clamp(240px, 31vw, 430px); animation: crossbow-kick 120ms ease-out; }
+.player-immune .knight { animation: immunity-flicker 260ms ease-in-out infinite alternate; }
+.arrow-shot { position: absolute; z-index: 100; color: #e2d5b8; font-size: 34px; line-height: 1; translate: -50% -50%; filter: drop-shadow(0 0 5px #fff8c8); animation: arrow-flight var(--arrow-duration) linear forwards; }
+.arrow-shot--hostile { z-index: 112; color: #ff7668; font-size: 43px; filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 10px #ff3028) drop-shadow(0 0 20px #9f1010); }
+.castle-trap { position: absolute; z-index: 93; display: flex; flex-direction: column; align-items: center; translate: -50% -50%; color: #b9b4aa; filter: drop-shadow(0 5px 4px #000); }
+.castle-trap span { font-size: 30px; letter-spacing: -8px; }.castle-trap small { color: #ce8c77; font-size: 8px; letter-spacing: .12em; }
 
 @keyframes flame { to { scale: .86 1.12; translate: 1px -3px; } }
 @keyframes mist { to { transform: translateX(8%); opacity: .5; } }
 @keyframes grounded-walk { from { transform: rotate(-1deg); } to { transform: rotate(1deg); } }
 @keyframes slash { 45% { translate: 4% 0; scale: 1.13; } }
 @keyframes flash { 20% { opacity: .85; transform: rotate(-16deg) scale(.7); } 100% { opacity: 0; transform: rotate(22deg) scale(1.2); } }
+@keyframes crossbow-kick { 50% { translate: -3% 0; } }
+@keyframes immunity-flicker { to { opacity: .48; filter: drop-shadow(0 0 12px #e9e1c7); } }
+@keyframes arrow-flight { from { transform: rotate(var(--arrow-angle)); } to { transform: translate(var(--arrow-x), var(--arrow-y)) rotate(var(--arrow-angle)); } }
 
 @media (max-width: 700px) {
   .pillar { width: 48px; height: 48px; }.table { width: 90px; height: 52px; }
   .knight { width: 135px; height: 270px; }.knight--attacking { width: 210px; height: 210px; }
+  .knight--crossbow.knight--attacking { width: 135px; height: 270px; }
 }
 @media (prefers-reduced-motion: reduce) { .torch i, .floor-mist { animation: none; } }

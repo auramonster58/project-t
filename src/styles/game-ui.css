@@ -7,19 +7,35 @@
 .enemy-status { position: absolute; top: 25px; left: 50%; transform: translateX(-50%); z-index: 120; text-align: center; }
 .enemy-health span { background: linear-gradient(90deg, #452324, #a33d38); }
 .room-counter { position: absolute; top: 24px; right: 24px; z-index: 120; padding: 8px 12px; border: 1px solid #676057; background: #090b0dcb; color: #bbb2a8; font-size: 11px; letter-spacing: .14em; }
+.exit-menu-button { position: absolute; top: 68px; right: 24px; z-index: 126; padding: 8px 11px; border: 1px solid #676057; border-radius: 5px; background: #090b0dcb; color: #bbb2a8; font-size: 9px; letter-spacing: .1em; cursor: pointer; }
 .game-tip { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 120; padding: 9px 15px; border: 1px solid #716b61; border-radius: 8px; background: #090b0dd1; color: #c7c0b7; font-size: 13px; white-space: nowrap; }
 .game-tip b { color: #f0e9df; }
 .victory { position: absolute; top: 28%; left: 50%; z-index: 12; transform: translateX(-50%); color: #e7d8bd; font-family: Georgia, serif; font-size: clamp(30px, 5vw, 64px); text-shadow: 0 4px 18px #000; animation: reveal 500ms ease-out; }
-.defeat { position: absolute; inset: 0; z-index: 150; display: grid; place-items: center; background: #170507dd; color: #d7c4bc; font: clamp(30px, 6vw, 70px) Georgia, serif; text-shadow: 0 4px 18px #000; pointer-events: none; }
+.game-menu-screen { display: grid; place-items: center; isolation: isolate; background: #000; }
+.game-menu-screen::before { display: none; }
+.game-menu-screen::after { display: none; }
+.game-menu-panel, .game-result { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.game-menu-panel { position: relative; z-index: 2; width: min(82vw, 520px); padding: 48px 30px; border: 1px solid #5d2025; border-radius: 6px; background: #050506e8; box-shadow: 0 0 90px #000, inset 0 0 45px #36080b4d; }
+.game-menu-panel > span { color: #7f4c4f; font-size: 10px; letter-spacing: .38em; }
+.game-menu-panel h1 { margin: 0; color: #d8d2cc; font: clamp(54px, 10vw, 100px) Georgia, serif; letter-spacing: .12em; text-shadow: 0 0 10px #fff2, 0 0 32px #a20e1d88; }
+.game-menu-panel h2 { margin: 0; color: #a89e98; font-size: 13px; letter-spacing: .2em; }
+.game-menu-panel p { max-width: 390px; margin: 0 0 10px; color: #837b78; line-height: 1.6; }
+.game-menu-panel button, .game-result button { min-width: 190px; padding: 12px 20px; border: 1px solid #782c33; border-radius: 4px; background: #260b0f; color: #ddd3cc; letter-spacing: .12em; cursor: pointer; }
+.game-menu-panel button:hover, .game-result button:hover { background: #421017; box-shadow: 0 0 18px #8f152844; }
+.game-menu-panel a { color: #746d69; font-size: 10px; letter-spacing: .14em; }
 
-.gate-guard { position: absolute; width: 58px; height: 125px; transition: opacity 500ms ease, rotate 500ms ease; filter: drop-shadow(7px 12px 7px #000a); transform: translate(-50%, -100%); transform-origin: 50% 100%; }
+.gate-guard { position: absolute; width: 58px; height: 125px; transition: top 100ms linear, opacity 500ms ease, rotate 500ms ease; filter: drop-shadow(7px 12px 7px #000a); transform: translate(-50%, -100%); transform-origin: 50% 100%; }
 .guard-head { position: absolute; top: 4px; left: 23px; width: 35px; height: 40px; border-radius: 50% 50% 42% 42%; background: #3b3d40; border: 2px solid #78756e; }
 .guard-body { position: absolute; top: 40px; left: 11px; width: 50px; height: 78px; background: linear-gradient(90deg, #191b1c, #48494a, #191b1c); clip-path: polygon(18% 0,82% 0,100% 100%,0 100%); border-top: 3px solid #777; }
 .guard-spear { position: absolute; top: 4px; left: 5px; width: 4px; height: 125px; background: #716f6a; transform: rotate(7deg); }
 .guard-spear::before { content: ''; position: absolute; left: -7px; top: -12px; border: 9px solid transparent; border-bottom: 22px solid #a7a39a; }
+.gate-guard--archer { width: 105px; height: 155px; }
+.enemy-archer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; transform: scaleX(calc(var(--enemy-facing) * -1)); filter: drop-shadow(7px 12px 7px #000a); }
 .gate-guard--attacking { animation: enemy-lunge 520ms ease-in-out infinite alternate; }
 .gate-guard--attacking .guard-spear { animation: spear-stab 520ms ease-in-out infinite alternate; }
 .gate-guard--revealed { z-index: 96 !important; filter: drop-shadow(0 0 8px #9cc7ff) drop-shadow(0 0 20px #537fba); }
+.gate-guard--hit { z-index: 97 !important; filter: sepia(1) saturate(7) hue-rotate(315deg) drop-shadow(0 0 9px #ff3028) drop-shadow(0 0 24px #9f1010); }
+.gate-guard.gate-guard--hidden { opacity: 0; pointer-events: none; }
 .gate-guard--defeated { opacity: .2; rotate: 76deg; animation: none; }
 .local-enemy-health { position: absolute; left: 2px; top: -22px; width: 70px; height: 7px; z-index: 4; padding: 1px; border: 1px solid #a37e72; background: #090909; transform: skewX(-12deg); }
 .local-enemy-health i { display: block; height: 100%; background: #b1433c; box-shadow: 0 0 9px #d46055; transition: width 180ms ease; }
@@ -33,6 +49,8 @@
 .ability-icon { font-size: 23px; line-height: 24px; }
 .ability-label { font-size: 10px; white-space: nowrap; }
 .ability-cooldown { position: absolute; inset: 0; display: grid; place-items: center; border-radius: inherit; background: #050607bd; color: #c7c0b7; font-size: 22px; font-weight: 700; }
+.weapon-switch { position: absolute; right: 24px; bottom: 22px; z-index: 126; display: flex; align-items: center; gap: 9px; padding: 9px 12px; border: 1px solid #716b61; border-radius: 8px; background: #090b0de8; color: #d8d0c6; cursor: pointer; }
+.weapon-switch b { display: grid; width: 22px; height: 22px; place-items: center; border: 1px solid #81796e; border-radius: 4px; font-size: 11px; }.weapon-switch span { font-size: 11px; letter-spacing: .1em; }
 
 .key-drop { position: absolute; z-index: 90; display: grid; place-items: center; translate: -50% -50%; color: #fff0a0; filter: drop-shadow(0 0 8px #fff) drop-shadow(0 0 24px #ffc93d); animation: key-float 650ms ease-in-out infinite alternate; }
 .key-drop span { font-size: 38px; rotate: 45deg; }.key-drop small { margin-top: 8px; color: #f1deae; font-size: 9px; letter-spacing: .18em; }
@@ -40,8 +58,9 @@
 .exit-portal span { width: 190px; height: 90px; border: 6px solid #c79bea; border-radius: 50%; background: radial-gradient(ellipse, #d493ff88, #2a1535 62%); transform: rotateX(55deg); box-shadow: 0 0 30px #c071e8, 0 0 75px #9c52c8; }
 .exit-portal small { margin-top: 7px; color: #bbb0c7; letter-spacing: .14em; }
 .exit-portal--active { z-index: 90; opacity: 1; animation: portal-pulse 1.1s ease-in-out infinite alternate; }
-.game-complete { position: absolute; inset: 0; z-index: 150; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: radial-gradient(circle, #5a3866dd, #08090bf5 58%); pointer-events: none; }
-.game-complete strong { font: clamp(34px, 7vw, 78px) Georgia, serif; color: #e8dcef; text-shadow: 0 0 25px #ab76c2; }.game-complete span { color: #c6b9cb; letter-spacing: .16em; }
+.game-result { position: absolute; inset: 0; z-index: 150; justify-content: center; background: radial-gradient(circle, #4a303fef, #08090bf7 60%); }
+.game-result strong { font: clamp(34px, 7vw, 78px) Georgia, serif; color: #e8dcef; text-shadow: 0 0 25px #ab76c2; }.game-result span { color: #c6b9cb; letter-spacing: .12em; }
+.game-result > div { display: flex; gap: 10px; margin-top: 12px; }
 
 .touch-controls { display: none; position: absolute; inset: auto 16px 18px; justify-content: space-between; z-index: 125; pointer-events: none; }
 .touch-controls div { display: flex; gap: 8px; }
@@ -65,8 +84,10 @@
   .back-button { width: 32px; height: 32px; }
   .enemy-status { top: 84px; }
   .room-counter { top: 14px; right: 10px; }
+  .exit-menu-button { top: 55px; right: 10px; }
   .ability-bar { bottom: 138px; gap: 6px; }
   .ability-button { width: 72px; min-height: 60px; }
+  .weapon-switch { right: 18px; bottom: 88px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
