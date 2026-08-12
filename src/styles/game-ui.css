@@ -1,0 +1,50 @@
+.game-hud { position: absolute; top: 22px; left: 22px; display: flex; align-items: center; gap: 12px; z-index: 10; }
+.game-hud img { width: 62px; height: 62px; object-fit: cover; object-position: 50% 22%; border-radius: 50%; border: 2px solid #8b8377; background: #111; }
+.back-button { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid #81776b; border-radius: 50%; background: #080a0dc4; font-size: 22px; cursor: pointer; }
+.hero-status strong, .enemy-status strong { display: block; margin-bottom: 6px; color: #d8d0c6; font-size: 12px; letter-spacing: .14em; text-shadow: 0 2px 4px #000; }
+.health, .enemy-health { width: min(25vw, 230px); height: 10px; padding: 2px; border: 1px solid #7a746c; background: #080909; transform: skewX(-14deg); }
+.health span, .enemy-health span { display: block; height: 100%; background: linear-gradient(90deg, #6f1720, #c8433e); transition: width 220ms ease; }
+.enemy-status { position: absolute; top: 25px; left: 50%; transform: translateX(-50%); z-index: 10; text-align: center; }
+.enemy-health span { background: linear-gradient(90deg, #452324, #a33d38); }
+.game-tip { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 10; padding: 9px 15px; border: 1px solid #716b61; border-radius: 8px; background: #090b0dd1; color: #c7c0b7; font-size: 13px; white-space: nowrap; }
+.game-tip b { color: #f0e9df; }
+.victory { position: absolute; top: 28%; left: 50%; z-index: 12; transform: translateX(-50%); color: #e7d8bd; font-family: Georgia, serif; font-size: clamp(30px, 5vw, 64px); text-shadow: 0 4px 18px #000; animation: reveal 500ms ease-out; }
+.defeat { position: absolute; inset: 0; z-index: 100; display: grid; place-items: center; background: #170507aa; color: #d7c4bc; font: clamp(30px, 6vw, 70px) Georgia, serif; text-shadow: 0 4px 18px #000; pointer-events: none; }
+
+.gate-guard { position: absolute; width: 58px; height: 125px; transition: opacity 500ms ease, rotate 500ms ease; filter: drop-shadow(7px 12px 7px #000a); transform: translate(-50%, -100%); transform-origin: 50% 100%; }
+.guard-head { position: absolute; top: 4px; left: 23px; width: 35px; height: 40px; border-radius: 50% 50% 42% 42%; background: #3b3d40; border: 2px solid #78756e; }
+.guard-body { position: absolute; top: 40px; left: 11px; width: 50px; height: 78px; background: linear-gradient(90deg, #191b1c, #48494a, #191b1c); clip-path: polygon(18% 0,82% 0,100% 100%,0 100%); border-top: 3px solid #777; }
+.guard-spear { position: absolute; top: 4px; left: 5px; width: 4px; height: 125px; background: #716f6a; transform: rotate(7deg); }
+.guard-spear::before { content: ''; position: absolute; left: -7px; top: -12px; border: 9px solid transparent; border-bottom: 22px solid #a7a39a; }
+.gate-guard--attacking { animation: enemy-lunge 520ms ease-in-out infinite alternate; }
+.gate-guard--attacking .guard-spear { animation: spear-stab 520ms ease-in-out infinite alternate; }
+.gate-guard--defeated { opacity: .2; rotate: 76deg; animation: none; }
+.damage-number { position: absolute; left: 76%; top: 20%; z-index: 50; color: #e5cbb3; font-size: 26px; font-weight: 800; animation: damage 420ms ease-out forwards; }
+
+.touch-controls { display: none; position: absolute; inset: auto 16px 18px; justify-content: space-between; z-index: 15; pointer-events: none; }
+.touch-controls div { display: flex; gap: 8px; }
+.touch-controls .move-pad { position: relative; width: 126px; height: 112px; display: block; }
+.move-pad button { position: absolute; }.move-pad button:first-child { left: 36px; top: 0; }.move-pad button:nth-child(2) { left: 0; top: 42px; }.move-pad button:nth-child(3) { right: 0; top: 42px; }.move-pad button:last-child { left: 36px; top: 58px; }
+.touch-controls button { width: 54px; height: 54px; padding: 0; border: 1px solid #8d8376; border-radius: 50%; background: #11151ac7; color: #eee7df; font-size: 22px; pointer-events: auto; touch-action: manipulation; }
+.touch-controls .attack-button { border-color: #aa675d; background: #4d2022dc; }
+
+@keyframes damage { to { opacity: 0; translate: 0 -55px; scale: 1.25; } }
+@keyframes reveal { from { opacity: 0; scale: .75; } }
+@keyframes enemy-lunge { to { translate: -16px 0; } }
+@keyframes spear-stab { to { transform: rotate(78deg) translateY(-30px); } }
+
+@media (pointer: coarse), (max-width: 700px) {
+  .touch-controls { display: flex; }
+  .game-tip { display: none; }
+  .game-hud { top: 12px; left: 12px; gap: 7px; }
+  .game-hud img { width: 48px; height: 48px; }
+  .back-button { width: 32px; height: 32px; }
+  .enemy-status { top: 84px; }
+  .castle { width: 90vw; }
+  .knight { width: 300px; height: 300px; bottom: 10%; }
+  .gate-guard { left: 78%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud, .mist { animation: none; }
+}

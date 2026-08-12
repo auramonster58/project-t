@@ -12,6 +12,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body { background: var(--bg); }
+a { color: inherit; text-decoration: none; }
 
 .container {
   max-width: 560px;
@@ -100,3 +101,5 @@ button.small { padding: 6px 10px; font-size: 14px; }
   padding: 14px 18px;
   color: var(--ink);
 }
+.game-link { transition: transform 160ms ease, border-color 160ms ease; }
+.game-link:hover { transform: translateY(-2px); border-color: var(--clay); }
