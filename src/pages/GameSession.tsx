@@ -14,7 +14,6 @@ import { HealthParticle } from '../components/game/HealthParticle';
 import { Knight } from '../components/game/Knight';
 import { QuestScreamer } from '../components/game/QuestScreamer';
 import { TouchControls } from '../components/game/TouchControls';
-import { UpperRoomScreamer } from '../components/game/UpperRoomScreamer';
 import { WeaponSwitch } from '../components/game/WeaponSwitch';
 import { useKnightAbilities } from '../hooks/useKnightAbilities';
 import { useArrowShots } from '../hooks/useArrowShots';
@@ -240,6 +239,12 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   }, [fifthQuest.finishScare, fifthQuest.state]);
 
   useEffect(() => {
+    if (ambush.phase !== 'fake-death') return;
+    const stopSound = playScreamerSound('beast');
+    return stopSound;
+  }, [ambush.phase]);
+
+  useEffect(() => {
     if (fifthQuest.state !== 'chest-scare') return;
     const stopSound = playScreamerSound('mimic');
     const timer = window.setTimeout(fifthQuest.finishChestScare, 1450);
@@ -335,8 +340,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       </div>
       <div className="game-tip"><b>Q</b> сменить оружие · <b>M1</b> атаковать</div>
       {ambush.phase === 'hunting' && <div className="ambush-warning">ЗАСАДА · ОНИ ИДУТ С ДВУХ СТОРОН</div>}
-      {ambush.phase === 'fake-death' && <FakeDeathOverlay />}
-      {scarePhase === 'screamer' && <UpperRoomScreamer />}
+      {ambush.phase === 'fake-death' && <FakeDeathOverlay weapon={weapon} />}
+      {scarePhase === 'screamer' && <FakeDeathOverlay weapon={weapon} />}
       {fifthQuest.state === 'scare' && <QuestScreamer />}
       {fifthQuest.state === 'chest-scare' && <ChestMimicScreamer />}
       <QuestNoteOverlay open={fifthQuest.noteOpen} />

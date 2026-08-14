@@ -36,14 +36,35 @@
 .mimic-tongue::after { content: ''; position: absolute; left: 50%; top: 12%; width: 4px; height: 72%; translate: -50%; background: #ff737366; box-shadow: 0 0 7px #f33; }
 .mimic-screamer > strong { z-index: 10; color: #fff; }
 
+.skeleton-devour { position: absolute; inset: 0; z-index: 180; overflow: hidden; background: radial-gradient(circle, #65120ee8, #020000 66%); animation: devour-screen 1.32s steps(8) forwards; }
+.skeleton-devour__noise { position: absolute; inset: -30%; z-index: 1; background: repeating-radial-gradient(circle, #fff 0 1px, transparent 1px 6px); opacity: .12; mix-blend-mode: screen; animation: scare-static 65ms steps(2) infinite; }
+.skeleton-devour__beast { position: absolute; left: 50%; top: calc(50% + min(41.25vh, 317px)); z-index: 4; width: min(78vw, 600px); height: min(125vh, 960px); translate: -50% -50%; transform-origin: 53% 17%; filter: drop-shadow(0 0 18px #fff2c4) drop-shadow(0 0 50px #d52b15); animation: devour-beast 1.32s cubic-bezier(.08,.82,.1,1) forwards; }
+.skeleton-devour__beast .pixel-sprite { z-index: 2; filter: brightness(1.65) contrast(1.4) saturate(.7) drop-shadow(0 0 8px #ffe1aa); }
+.skeleton-devour__mouth { position: absolute; left: 53%; top: 17%; z-index: 4; width: 25%; height: 4%; translate: -50% -50%; overflow: hidden; border: 7px solid #090000; border-radius: 48%; background: radial-gradient(ellipse, #b7191d, #270002 65%); box-shadow: inset 0 0 22px #000, 0 0 18px #f20; animation: devour-mouth 1.32s cubic-bezier(.1,.72,.12,1) forwards; }
+.skeleton-devour__mouth i { position: absolute; inset-inline: 2%; display: flex; justify-content: space-around; }.skeleton-devour__mouth i:first-child { top: 0; }.skeleton-devour__mouth i:last-child { bottom: 0; rotate: 180deg; }
+.skeleton-devour__mouth b { width: 0; height: 0; border: 5px solid transparent; border-top: 17px solid #e7dec8; }
+.skeleton-devour__victim { position: absolute; left: 50%; top: 78%; z-index: 7; width: 115px; height: 170px; translate: -50% -50%; filter: drop-shadow(0 0 8px #fff) drop-shadow(0 0 18px #f20); animation: devour-victim 1.32s cubic-bezier(.4,0,.35,1) forwards; }
+.skeleton-devour__camera { position: absolute; left: 50%; top: 50%; z-index: 10; width: 18vmin; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; opacity: 0; background: radial-gradient(circle, #000 0 42%, #210000 58%, transparent 72%); box-shadow: 0 0 30px #000, 0 0 85px #520000; pointer-events: none; animation: devour-camera 1.32s cubic-bezier(.65,0,1,.45) forwards; }
+.skeleton-devour__bite { position: absolute; inset: 0; z-index: 12; pointer-events: none; opacity: 0; background: #fff; animation: devour-bite 1.32s steps(2) forwards; }
+.skeleton-devour > strong { position: absolute; left: 50%; bottom: 5%; z-index: 10; translate: -50%; color: #f4d9c2; font-size: clamp(17px, 3vw, 38px); letter-spacing: .13em; white-space: nowrap; text-shadow: 0 0 13px #f20; animation: devour-title 1.32s steps(4) forwards; }
+
 @keyframes scare-static { to { translate: 7% -5%; rotate: 2deg; } }
 @keyframes shadow-reach { to { scale: 1.35 1.08; translate: 8% 0; opacity: .92; } }
 @keyframes beast-eye-jolt { 50% { translate: 5px -2px; filter: brightness(2); } }
 @keyframes pupil-hunt { 50% { translate: -20% -65%; scale: 1.4; } }
 @keyframes tongue-thrash { to { translate: -45% -8%; rotate: 5deg; } }
 @keyframes nightmare-lunge { 0% { scale: .015; rotate: -9deg; filter: blur(28px) contrast(3); } 24% { scale: 1.18; rotate: 4deg; filter: blur(0); } 36% { scale: .92; rotate: -3deg; } 52% { scale: 1.35; rotate: 2deg; } 100% { scale: 2.7; filter: contrast(1.8) brightness(.32); } }
+@keyframes devour-screen { 0%, 8% { filter: invert(1); } 12%, 78% { filter: none; } 100% { filter: brightness(0); } }
+@keyframes devour-beast { 0% { top: 118%; scale: 1.12; filter: blur(4px) brightness(1.35); } 16% { top: calc(50% + min(41.25vh, 317px)); scale: 1.42; filter: blur(0); } 45% { scale: 1.58; } 66% { scale: 1.7; } 82% { scale: 3.4; filter: contrast(1.65); } 100% { scale: 12; filter: brightness(.08) contrast(2.4); } }
+@keyframes devour-victim { 0%, 18% { top: 80%; scale: 1; } 42% { top: 58%; rotate: -8deg; } 67% { top: 31%; scale: .62; rotate: 9deg; } 76%, 100% { top: 23%; scale: .05; opacity: 0; } }
+@keyframes devour-mouth { 0%, 16% { width: 25%; height: 4%; } 38% { width: 48%; height: 30%; } 62% { width: 70%; height: 52%; } 78% { width: 82%; height: 64%; filter: brightness(1.15); } 100% { width: 108%; height: 86%; background: #000; filter: brightness(.08); } }
+@keyframes devour-camera { 0%, 72% { opacity: 0; scale: .08; } 82% { opacity: .3; scale: .35; } 100% { opacity: 1; scale: 12; } }
+@keyframes devour-bite { 0%, 73% { opacity: 0; } 75% { opacity: 1; } 78% { opacity: 0; background: #810000; } 82% { opacity: .85; } 86%, 100% { opacity: 0; } }
+@keyframes devour-title { 0%, 20% { opacity: 0; } 35%, 72% { opacity: 1; } 100% { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .screamer-noise, .screamer-shadow, .screamer-eye, .screamer-eye b, .mimic-eye b,
   .quest-screamer__eye b, .screamer-maw > i, .quest-screamer__face { animation: none; }
+  .skeleton-devour, .skeleton-devour__beast, .skeleton-devour__victim,
+  .skeleton-devour__mouth, .skeleton-devour__camera, .skeleton-devour__bite { animation: none; }
 }

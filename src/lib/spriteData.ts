@@ -1,6 +1,6 @@
 export type SpriteAnimationName =
   | 'idle' | 'walk' | 'run' | 'attack1' | 'attack2' | 'attack3' | 'attack4'
-  | 'damage' | 'dead' | 'block' | 'victory';
+  | 'damage' | 'dead' | 'block' | 'victory' | 'screamer';
 export type MovementDirection = 'left' | 'right' | 'up' | 'down';
 
 export type SpriteFrame = { x: number; y: number; width: number; height: number };
@@ -59,6 +59,17 @@ export const crossbowKnightSheet: SpriteSheet = {
   },
 };
 
+export const restoredSwordKnightSheet: SpriteSheet = {
+  ...swordKnightSheet,
+  src: '/assets/hero-sword-sheet-walk-fixed-transparent.png',
+  height: 1537,
+};
+
+export const restoredCrossbowKnightSheet: SpriteSheet = {
+  ...crossbowKnightSheet,
+  src: '/assets/hero-crossbow-sheet-restored-transparent.png',
+};
+
 export const archerSheet: SpriteSheet = {
   src: '/assets/dark-archer-animation-sheet-64bit-transparent.png', width: 1024, height: 1536,
   animations: {
@@ -83,6 +94,7 @@ export const archerSheet: SpriteSheet = {
 export const horrorMonsterSheet: SpriteSheet = {
   src: '/assets/horror-skeleton-animation-sheet-64bit-transparent.png', width: 1024, height: 1536,
   animations: {
+    screamer: animation([{ x: 12, y: 10, width: 360, height: 610 }], 1400, false),
     idle: animation(row([400, 535, 670, 805], 35, 115, 190), 260),
     walk: animation(row([400, 535, 670, 805], 235, 115, 200), 145),
     run: animation(row([400, 535, 670, 805], 445, 115, 185), 95),
