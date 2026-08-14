@@ -38,11 +38,13 @@ export function Knight(props: KnightProps) {
   const animation = selectAnimation({ weapon, health, isDamaged, isAttacking,
     attackSequence, isMoving, isRunning, isBlocking, isVictorious });
   const className = ['knight', `knight--${animation}`, `knight--${weapon}`].join(' ');
+  const isDirectionalPose = ['idle', 'walk', 'run'].includes(animation);
+  const modelFacing = isDirectionalPose ? 1 : facing;
 
   return (
     <div className={className} style={{ left: screenX, top: `${y}%`, '--facing': facing,
-      '--attack-shift': `${facing * 24}px`, '--hit-shift': `${facing * -8}px`,
-      '--death-lean': `${facing * 18}deg`, '--death-rotate': `${facing * 82}deg`,
+      '--model-facing': modelFacing, '--attack-shift': `${facing * 24}px`,
+      '--hit-shift': `${facing * -8}px`,
       zIndex: 101 } as React.CSSProperties}>
       <span className="attack-flash" />
       <PixelSprite animation={animation} direction={direction}
@@ -58,7 +60,7 @@ function selectAnimation(state: Omit<KnightProps, 'screenX' | 'y' | 'facing' | '
   if (state.isVictorious) return 'victory' satisfies SpriteAnimationName;
   if (state.isAttacking) {
     if (state.weapon === 'sword') return state.attackSequence % 2 ? 'attack1' : 'attack2';
-    return `attack${state.attackSequence % 4 + 1}` as SpriteAnimationName;
+    return 'attack1' satisfies SpriteAnimationName;
   }
   if (state.isBlocking) return 'block' satisfies SpriteAnimationName;
   if (state.isRunning) return 'run' satisfies SpriteAnimationName;

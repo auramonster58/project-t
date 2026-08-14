@@ -4,10 +4,10 @@
 .game-page button, .game-page a, .room-counter, .game-tip, .ambush-warning { border-radius: 0; font-family: inherit; text-transform: uppercase; }
 .pixel-sprite { position: absolute; inset: 0; display: block; background-color: transparent; background-repeat: no-repeat; image-rendering: pixelated; }
 
-.knight { width: clamp(112px, 10vw, 132px); height: clamp(160px, 16vw, 188px); transform: translate(-50%, -100%); }
+.knight { width: clamp(112px, 10vw, 132px); height: clamp(160px, 16vw, 188px); transform: translate(-50%, -100%) scaleX(var(--model-facing, 1)); }
 .knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: clamp(175px, 16vw, 220px); }
 .knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { transform: translate(-50%, -100%) scaleX(var(--facing)); }
-.knight--dead { width: clamp(165px, 15vw, 205px); height: clamp(135px, 13vw, 165px); }
+.knight--dead { width: clamp(165px, 15vw, 205px); height: clamp(100px, 9vw, 120px); }
 .knight--dead { transform: translate(-50%, -100%) scaleX(var(--facing)); animation: custom-player-death 820ms steps(8) forwards; }
 .knight--victory { width: clamp(145px, 13vw, 175px); height: clamp(185px, 18vw, 220px); }
 .knight--idle { animation: custom-breathe 1.2s steps(4) infinite; }
@@ -18,6 +18,7 @@
 .knight--attack2 { animation: custom-thrust 410ms steps(5); }
 .knight--attack3 { animation: custom-kick 360ms steps(4); }
 .knight--attack4 { animation: custom-whip 390ms steps(5); }
+.knight--crossbow.knight--attack1 { animation: custom-crossbow-shot 160ms steps(2); }
 .knight--block { animation: custom-block 700ms steps(4) infinite alternate; }
 .knight--victory { animation: custom-victory 800ms steps(6) infinite alternate; }
 .knight--attack1 .attack-flash, .knight--attack2 .attack-flash { animation: flash 360ms steps(3) forwards; }
@@ -27,7 +28,7 @@
 .gate-guard { width: 116px; height: 166px; transition: left 80ms linear, top 80ms linear, opacity 180ms steps(2); transform: translate(-50%, -100%); }
 .gate-guard--attack1, .gate-guard--attack2 { width: 178px; }
 .gate-guard--attack1, .gate-guard--attack2 { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
-.gate-guard--dead { width: 140px; height: 160px; }
+.gate-guard--dead { width: 165px; height: 105px; overflow: hidden; }
 .gate-guard--dead { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
 .gate-guard--guard .pixel-sprite { filter: grayscale(.25) brightness(.78); }
 .gate-guard--archer { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
@@ -45,7 +46,7 @@
 .ambush-monster { translate: -50% -90%; scale: var(--monster-facing) 1; animation: custom-monster-run 320ms steps(4) infinite; }
 .ambush-monster::before, .ambush-monster::after, .quest-chase-monster::before, .quest-chase-monster::after { display: none; }
 .ambush-monster--damage { animation: custom-monster-hit 380ms steps(5); }
-.ambush-monster--dead { width: 175px; height: 150px; animation: custom-monster-death 680ms steps(7) forwards; }
+.ambush-monster--dead { width: 175px; height: 100px; overflow: hidden; animation: custom-monster-death 680ms steps(7) forwards; }
 .quest-chase-monster { translate: -50% -86%; scale: var(--monster-facing) 1; animation: custom-monster-run 320ms steps(4) infinite; }
 .sleeping-monster { width: 145px; height: 175px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .sleeping-monster::before, .sleeping-monster::after { display: none; }
@@ -76,8 +77,9 @@
 @keyframes custom-thrust { 45% { translate: var(--attack-shift) 0; scale: 1.08 .96; } }
 @keyframes custom-kick { 50% { translate: var(--attack-shift) -6px; rotate: -4deg; } }
 @keyframes custom-whip { 40% { translate: var(--attack-shift) 0; rotate: 8deg; } }
-@keyframes custom-player-hit { 35% { translate: var(--hit-shift) 0; filter: brightness(2) sepia(1) saturate(4); } 65% { translate: 0 -2px; } }
-@keyframes custom-player-death { 45% { translate: 0 4%; rotate: var(--death-lean); } 100% { translate: 0 65%; rotate: var(--death-rotate); opacity: .8; } }
+@keyframes custom-player-hit { 20% { filter: brightness(2.6) sepia(1) saturate(6) drop-shadow(0 0 8px #e32921); } 40% { translate: var(--hit-shift) 0; } 65% { translate: 4px -2px; filter: brightness(.65) sepia(1) saturate(4); } }
+@keyframes custom-crossbow-shot { 50% { translate: 0 2px; scale: .97 1.02; filter: brightness(1.22); } }
+@keyframes custom-player-death { from { translate: 0 -34px; opacity: .4; } 70% { translate: 0 4px; } to { translate: 0; opacity: .82; } }
 @keyframes custom-block { to { filter: brightness(1.25) drop-shadow(0 0 6px #c8b48c); translate: 0 -2px; } }
 @keyframes custom-victory { to { translate: 0 -8px; filter: brightness(1.3); } }
 @keyframes custom-enemy-walk { 25% { translate: -2px -3px; } 75% { translate: 2px -3px; } }
@@ -85,10 +87,10 @@
 @keyframes custom-enemy-attack { 55% { translate: var(--enemy-shift) 0; rotate: 5deg; } }
 @keyframes custom-enemy-thrust { 50% { translate: var(--enemy-shift) 0; scale: 1.08 .96; } }
 @keyframes custom-enemy-hit { 40% { translate: var(--hit-shift) 0; filter: brightness(2) sepia(1) saturate(5); } }
-@keyframes custom-enemy-death { 50% { translate: 0 18%; rotate: var(--death-lean); } 100% { translate: 0 68%; rotate: var(--death-rotate); opacity: .78; } }
+@keyframes custom-enemy-death { from { translate: 0 -38px; opacity: .45; } 70% { translate: 0 5px; } 100% { translate: 0; opacity: .78; } }
 @keyframes custom-monster-run { 25% { translate: -50% -95%; rotate: -2deg; } 75% { translate: -50% -88%; rotate: 2deg; } }
 @keyframes custom-monster-hit { 45% { translate: -55% -90%; filter: brightness(2) sepia(1) saturate(5); } }
-@keyframes custom-monster-death { to { translate: -50% -30%; rotate: 84deg; opacity: .72; } }
+@keyframes custom-monster-death { from { translate: -50% -120%; opacity: .45; } 70% { translate: -50% -86%; } to { translate: -50% -90%; opacity: .72; } }
 @keyframes custom-immunity { to { opacity: .48; filter: brightness(1.45) drop-shadow(0 0 8px #e9e1c7); } }
 @keyframes pixel-flame { 50% { scale: .8 1.15; translate: 2px -3px; } }
 @keyframes pixel-mist { to { translate: 190px 0; } }

@@ -42,8 +42,7 @@ export function Enemy(props: EnemyProps) {
   return (
     <div className={classes} style={{ left: enemy.x, top: `${enemy.y}%`, zIndex: Math.round(enemy.y) + 10,
       '--enemy-facing': displayedFacing, '--enemy-shift': `${displayedFacing * 24}px`,
-      '--hit-shift': `${displayedFacing * -9}px`, '--death-lean': `${displayedFacing * 25}deg`,
-      '--death-rotate': `${displayedFacing * 88}deg` } as React.CSSProperties}>
+      '--hit-shift': `${displayedFacing * -9}px` } as React.CSSProperties}>
       {(isTargeted || isRevealed || isHit) && enemy.health > 0
         && <span className="local-enemy-health"><i style={{ width: `${enemy.health}%` }} /></span>}
       <PixelSprite animation={animation}
