@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type Dispatch, type MutableRefObject, type
 import type { ArrowData } from '../components/game/ArrowShot';
 import type { EnemyData } from '../components/game/Enemy';
 import { combatDistance } from '../lib/gameCombat';
-import { ROOM_WIDTH } from '../lib/gameData';
+import { PLAY_MAX_Y, PLAY_MIN_Y, ROOM_WIDTH } from '../lib/gameData';
 
 type PlayerPosition = { x: number; y: number };
 type SetEnemies = Dispatch<SetStateAction<EnemyData[]>>;
@@ -20,9 +20,11 @@ export function useEnemyArchers(
   onPlayerHit: (damage: number) => void,
 ) {
   const [enemyArrows, setEnemyArrows] = useState<ArrowData[]>([]);
+  const [shootingArchers, setShootingArchers] = useState<Set<number>>(() => new Set());
   const enemiesRef = useRef(enemies);
   const lastShots = useRef(new Map<number, number>());
   const nextArrowId = useRef(10_000);
+  const effectTimers = useRef(new Set<number>());
 
   useEffect(() => { enemiesRef.current = enemies; }, [enemies]);
 
@@ -31,7 +33,7 @@ export function useEnemyArchers(
       setEnemies((current) => current.map((enemy) => {
         if (enemy.kind !== 'archer' || enemy.health === 0) return enemy;
         const nextY = enemy.y + enemy.patrolDirection * 0.7;
-        if (nextY < 31 || nextY > 76) {
+        if (nextY < PLAY_MIN_Y || nextY > PLAY_MAX_Y) {
           return { ...enemy, patrolDirection: -enemy.patrolDirection as 1 | -1 };
         }
         return { ...enemy, y: nextY };
@@ -51,21 +53,35 @@ export function useEnemyArchers(
           && Math.abs(enemy.y - player.y) <= 5;
         if (!canSeePlayer || now - lastShot < SHOT_COOLDOWN_MS) return;
         lastShots.current.set(enemy.id, now);
+        setShootingArchers((current) => new Set(current).add(enemy.id));
+        const shootingTimer = window.setTimeout(() => {
+          effectTimers.current.delete(shootingTimer);
+          setShootingArchers((current) => {
+          const next = new Set(current);
+          next.delete(enemy.id);
+          return next;
+          });
+        }, 560);
+        effectTimers.current.add(shootingTimer);
         const id = nextArrowId.current += 1;
         const target = { x: player.x, y: enemy.y };
         setEnemyArrows((current) => [...current, {
           id, x: enemy.x, y: enemy.y, targetX: target.x, targetY: enemy.y,
           flightMs: ARROW_FLIGHT_MS, hostile: true,
         }]);
-        window.setTimeout(() => {
+        const arrowTimer = window.setTimeout(() => {
+          effectTimers.current.delete(arrowTimer);
           setEnemyArrows((current) => current.filter((arrow) => arrow.id !== id));
           const currentPlayer = playerPosition.current;
           if (Math.hypot(currentPlayer.x - target.x, (currentPlayer.y - target.y) * 9) < 75) onPlayerHit(ENEMY_ARROW_DAMAGE);
         }, ARROW_FLIGHT_MS);
+        effectTimers.current.add(arrowTimer);
       });
     }, 200);
     return () => window.clearInterval(timer);
   }, [onPlayerHit, playerPosition, unlockedRoom]);
 
-  return enemyArrows;
+  useEffect(() => () => effectTimers.current.forEach((timer) => window.clearTimeout(timer)), []);
+
+  return { enemyArrows, shootingArchers };
 }

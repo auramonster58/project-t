@@ -1,0 +1,103 @@
+:root { --pixel-ink: #050403; --pixel-coal: #151311; --pixel-stone: #302b27; --pixel-silver: #b6aca0; --pixel-gold: #b78950; --pixel-blood: #721b18; }
+.game-page { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; image-rendering: pixelated; background: #030302; }
+.game-page::before { content: ''; position: absolute; inset: 0; z-index: 140; pointer-events: none; opacity: .08; background: repeating-linear-gradient(0deg, transparent 0 3px, #d8c8aa 3px 4px); mix-blend-mode: overlay; }
+.game-page button, .game-page a, .room-counter, .game-tip, .ambush-warning { border-radius: 0; font-family: inherit; text-transform: uppercase; }
+.pixel-sprite { position: absolute; inset: 0; display: block; background-color: transparent; background-repeat: no-repeat; image-rendering: pixelated; }
+
+.knight { width: clamp(112px, 10vw, 132px); height: clamp(160px, 16vw, 188px); transform: translate(-50%, -100%); }
+.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: clamp(175px, 16vw, 220px); }
+.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { transform: translate(-50%, -100%) scaleX(var(--facing)); }
+.knight--dead { width: clamp(165px, 15vw, 205px); height: clamp(135px, 13vw, 165px); }
+.knight--dead { transform: translate(-50%, -100%) scaleX(var(--facing)); animation: custom-player-death 820ms steps(8) forwards; }
+.knight--victory { width: clamp(145px, 13vw, 175px); height: clamp(185px, 18vw, 220px); }
+.knight--idle { animation: custom-breathe 1.2s steps(4) infinite; }
+.knight--damage { animation: custom-player-hit 380ms steps(5); }
+.knight--walk { animation: custom-player-walk 420ms steps(4) infinite; }
+.knight--run { animation: custom-player-run 260ms steps(4) infinite; }
+.knight--attack1 { animation: custom-slash 390ms steps(5); }
+.knight--attack2 { animation: custom-thrust 410ms steps(5); }
+.knight--attack3 { animation: custom-kick 360ms steps(4); }
+.knight--attack4 { animation: custom-whip 390ms steps(5); }
+.knight--block { animation: custom-block 700ms steps(4) infinite alternate; }
+.knight--victory { animation: custom-victory 800ms steps(6) infinite alternate; }
+.knight--attack1 .attack-flash, .knight--attack2 .attack-flash { animation: flash 360ms steps(3) forwards; }
+.knight--crossbow .attack-flash { display: none; }
+.knight-shadow { height: 7px; border-radius: 0; filter: none; background: #000b; }
+
+.gate-guard { width: 116px; height: 166px; transition: left 80ms linear, top 80ms linear, opacity 180ms steps(2); transform: translate(-50%, -100%); }
+.gate-guard--attack1, .gate-guard--attack2 { width: 178px; }
+.gate-guard--attack1, .gate-guard--attack2 { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
+.gate-guard--dead { width: 140px; height: 160px; }
+.gate-guard--dead { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
+.gate-guard--guard .pixel-sprite { filter: grayscale(.25) brightness(.78); }
+.gate-guard--archer { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
+.gate-guard--archer .pixel-sprite { filter: brightness(.82) sepia(.15); }
+.gate-guard--damage { animation: custom-enemy-hit 390ms steps(5); }
+.gate-guard--guard.gate-guard--walk { animation: custom-enemy-walk 520ms steps(4) infinite; }
+.gate-guard--archer.gate-guard--walk { animation: custom-archer-walk 480ms steps(4) infinite; }
+.gate-guard--attack1 { animation: custom-enemy-attack 480ms steps(5); }
+.gate-guard--attack2 { animation: custom-enemy-thrust 500ms steps(5); }
+.gate-guard.gate-guard--defeated { opacity: 1; rotate: 0deg; animation: custom-enemy-death 680ms steps(7) forwards; filter: drop-shadow(6px 9px 4px #000b); }
+.local-enemy-health, .health, .enemy-health { border-radius: 0; border-color: #796d60; background: #080706; box-shadow: 3px 3px 0 #000; }
+.health span, .enemy-health span, .local-enemy-health i { background: repeating-linear-gradient(90deg, #8e2822 0 8px, #b54033 8px 10px); box-shadow: none; }
+
+.ambush-monster, .quest-chase-monster { width: 150px; height: 180px; border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow: visible; }
+.ambush-monster { translate: -50% -90%; scale: var(--monster-facing) 1; animation: custom-monster-run 320ms steps(4) infinite; }
+.ambush-monster::before, .ambush-monster::after, .quest-chase-monster::before, .quest-chase-monster::after { display: none; }
+.ambush-monster--damage { animation: custom-monster-hit 380ms steps(5); }
+.ambush-monster--dead { width: 175px; height: 150px; animation: custom-monster-death 680ms steps(7) forwards; }
+.quest-chase-monster { translate: -50% -86%; scale: var(--monster-facing) 1; animation: custom-monster-run 320ms steps(4) infinite; }
+.sleeping-monster { width: 145px; height: 175px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.sleeping-monster::before, .sleeping-monster::after { display: none; }
+.sleeping-monster--released { opacity: .2; transform: translateY(-30px) scale(.4); }
+
+.castle-room { background-color: #11100e; background-image: linear-gradient(90deg, transparent 0 49%, #40382f 49% 52%, transparent 52%), linear-gradient(transparent 0 48%, #080706 48% 54%, transparent 54%); background-size: 72px 40px; }
+.stone-floor { background: repeating-linear-gradient(90deg, #11100e 0 86px, #28231f 86px 90px), repeating-linear-gradient(0deg, transparent 0 46px, #050403 46px 50px); }
+.hall-wall { background: repeating-linear-gradient(90deg, #171513 0 62px, #3a332c 62px 66px); border-color: #080706; box-shadow: none; }
+.room-pillar, .room-divider { background: repeating-linear-gradient(90deg, #171513 0 20px, #433a32 20px 24px); border-color: #080706; box-shadow: 8px 0 0 #0008; }
+.room-door { border-radius: 0; background: repeating-linear-gradient(90deg, #211711 0 10px, #5a3d29 10px 14px); box-shadow: 0 0 0 6px #111, 8px 8px 0 #0009; }
+.room-torch { border-radius: 0; background: conic-gradient(from 45deg, transparent 0 12.5%, #fff1a1 0 25%, #d46f27 0 50%, #8e201d 0 75%, transparent 0); filter: drop-shadow(0 0 10px #d46f27); animation: pixel-flame 180ms steps(2) infinite; }
+.floor-mist { opacity: .18; filter: none; background: repeating-linear-gradient(90deg, transparent 0 120px, #938b7b22 120px 190px); animation: pixel-mist 3s steps(12) infinite; }
+
+.hud-pixel-portrait { position: relative; display: block; width: 62px; height: 62px; overflow: hidden; border: 2px solid #8b8377; background: #050403; box-shadow: 3px 3px 0 #000; }
+.hud-pixel-portrait .pixel-sprite { scale: 1.5; transform-origin: 50% 23%; }
+.abandoned-armor { position: relative; overflow: hidden; background: transparent; border: 0; box-shadow: none; }
+.abandoned-armor .pixel-sprite { filter: grayscale(.65) brightness(.7); }
+.game-hud, .enemy-status, .room-counter, .game-tip, .ability-bar, .weapon-switch { filter: drop-shadow(4px 4px 0 #000); }
+.game-menu-screen { background: repeating-linear-gradient(0deg, transparent 0 7px, #1a130a 7px 8px), radial-gradient(circle, #211407, #030302 64%); }
+.game-menu-panel, .registration-form, .game-result button, .ability-button, .weapon-switch { border-radius: 0; box-shadow: 5px 5px 0 #000; backdrop-filter: none; }
+.game-menu-panel h1, .game-result strong, .victory { font-family: inherit; text-shadow: 3px 3px 0 #5b260e; }
+.neon-patterns { opacity: .2; filter: contrast(2); }
+
+@keyframes custom-breathe { 50% { translate: 0 -2px; scale: 1.015 .985; } }
+@keyframes custom-player-walk { 25% { translate: -2px -4px; rotate: -1deg; } 75% { translate: 2px -4px; rotate: 1deg; } }
+@keyframes custom-player-run { 25% { translate: 5px -7px; rotate: 2deg; } 75% { translate: -3px -3px; rotate: -2deg; } }
+@keyframes custom-slash { 0% { rotate: -7deg; } 55% { translate: var(--attack-shift) -4px; rotate: 7deg; scale: 1.06; } }
+@keyframes custom-thrust { 45% { translate: var(--attack-shift) 0; scale: 1.08 .96; } }
+@keyframes custom-kick { 50% { translate: var(--attack-shift) -6px; rotate: -4deg; } }
+@keyframes custom-whip { 40% { translate: var(--attack-shift) 0; rotate: 8deg; } }
+@keyframes custom-player-hit { 35% { translate: var(--hit-shift) 0; filter: brightness(2) sepia(1) saturate(4); } 65% { translate: 0 -2px; } }
+@keyframes custom-player-death { 45% { translate: 0 4%; rotate: var(--death-lean); } 100% { translate: 0 65%; rotate: var(--death-rotate); opacity: .8; } }
+@keyframes custom-block { to { filter: brightness(1.25) drop-shadow(0 0 6px #c8b48c); translate: 0 -2px; } }
+@keyframes custom-victory { to { translate: 0 -8px; filter: brightness(1.3); } }
+@keyframes custom-enemy-walk { 25% { translate: -2px -3px; } 75% { translate: 2px -3px; } }
+@keyframes custom-archer-walk { 25% { transform: translate(-50%,-103%) scaleX(var(--enemy-facing)); } 75% { transform: translate(-50%,-98%) scaleX(var(--enemy-facing)); } }
+@keyframes custom-enemy-attack { 55% { translate: var(--enemy-shift) 0; rotate: 5deg; } }
+@keyframes custom-enemy-thrust { 50% { translate: var(--enemy-shift) 0; scale: 1.08 .96; } }
+@keyframes custom-enemy-hit { 40% { translate: var(--hit-shift) 0; filter: brightness(2) sepia(1) saturate(5); } }
+@keyframes custom-enemy-death { 50% { translate: 0 18%; rotate: var(--death-lean); } 100% { translate: 0 68%; rotate: var(--death-rotate); opacity: .78; } }
+@keyframes custom-monster-run { 25% { translate: -50% -95%; rotate: -2deg; } 75% { translate: -50% -88%; rotate: 2deg; } }
+@keyframes custom-monster-hit { 45% { translate: -55% -90%; filter: brightness(2) sepia(1) saturate(5); } }
+@keyframes custom-monster-death { to { translate: -50% -30%; rotate: 84deg; opacity: .72; } }
+@keyframes custom-immunity { to { opacity: .48; filter: brightness(1.45) drop-shadow(0 0 8px #e9e1c7); } }
+@keyframes pixel-flame { 50% { scale: .8 1.15; translate: 2px -3px; } }
+@keyframes pixel-mist { to { translate: 190px 0; } }
+
+@media (max-width: 700px) {
+  .knight { width: 106px; height: 165px; }.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: 170px; }
+  .gate-guard { width: 102px; height: 150px; }.gate-guard--attack1, .gate-guard--attack2 { width: 154px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knight, .gate-guard, .ambush-monster, .quest-chase-monster, .room-torch, .floor-mist { animation: none; }
+}

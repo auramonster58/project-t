@@ -1,0 +1,49 @@
+.upper-room-screamer, .quest-screamer, .mimic-screamer { isolation: isolate; }
+.screamer-effects { position: absolute; inset: 0; z-index: 8; overflow: hidden; pointer-events: none; }
+.screamer-noise { position: absolute; inset: -40%; background: repeating-radial-gradient(circle, #fff 0 1px, transparent 1px 5px); opacity: .11; mix-blend-mode: screen; animation: scare-static 55ms steps(2) infinite; }
+.screamer-shadow { position: absolute; top: 8%; width: 28%; height: 84%; border-radius: 50% 50% 10% 10%; background: #000; filter: blur(5px); opacity: .72; animation: shadow-reach 260ms ease-in-out infinite alternate; }
+.screamer-shadow::before { content: ''; position: absolute; top: 20%; width: 34%; aspect-ratio: 1; border-radius: 50%; background: #ff240c; box-shadow: 0 0 18px #f00; }
+.screamer-shadow--left { left: -17%; rotate: 12deg; }.screamer-shadow--right { right: -17%; rotate: -12deg; animation-delay: -130ms; }
+.screamer-shadow--left::before { right: 5%; }.screamer-shadow--right::before { left: 5%; }
+
+.screamer-monster { z-index: 2; border-color: #2a0505; background: radial-gradient(circle at 36% 25%, #8b4434, #220504 54%, #010000 78%); }
+.screamer-monster::after { content: ''; position: absolute; inset: 3%; border: 3px solid #a9241a55; border-radius: inherit; box-shadow: inset 0 0 30px #f000002e; }
+.screamer-eye { overflow: hidden; height: 11%; rotate: var(--eye-rotate); animation: beast-eye-jolt 80ms steps(2) infinite; }
+.screamer-eye--left { --eye-rotate: 13deg; }.screamer-eye--right { --eye-rotate: -13deg; }
+.screamer-eye b, .mimic-eye b, .quest-screamer__eye b { position: absolute; left: 50%; top: 50%; width: 28%; aspect-ratio: .55; translate: -50% -50%; border-radius: 50%; background: #050000; box-shadow: 0 0 7px #f00; animation: pupil-hunt 110ms steps(2) infinite; }
+.screamer-scar { position: absolute; left: 48%; top: 12%; width: 5%; height: 40%; rotate: 18deg; border-left: 8px solid #160000; border-right: 2px solid #bd3325; filter: drop-shadow(0 0 5px #f00); }
+.screamer-maw { display: block; }
+.screamer-maw > span { position: absolute; left: 3%; right: 3%; z-index: 2; display: flex; justify-content: space-around; }
+.screamer-maw > span:first-child { top: -1%; }.screamer-maw > span:last-child { bottom: -1%; rotate: 180deg; }
+.screamer-maw > i { position: absolute; left: 50%; bottom: -8%; width: 35%; height: 45%; translate: -50%; border-radius: 50% 50% 0 0; background: #8b111b; box-shadow: inset 0 0 20px #240004; animation: tongue-thrash 90ms infinite alternate; }
+.upper-room-screamer > strong, .upper-room-screamer > small { z-index: 10; }
+
+.quest-screamer__face { position: relative; z-index: 2; width: min(78vw, 650px); aspect-ratio: .82; border: clamp(7px, 1.4vw, 14px) solid #250102; border-radius: 48% 52% 35% 38%; background: radial-gradient(circle at 48% 20%, #8a4033, #260404 48%, #020000 76%); box-shadow: inset 0 0 85px #000, 0 0 75px #f10; animation: nightmare-lunge 1.1s cubic-bezier(.05,.8,.12,1) forwards; }
+.quest-screamer__face::before, .quest-screamer__face::after { content: ''; position: absolute; top: -13%; width: 18%; height: 40%; border: 10px solid #817363; border-bottom: 0; border-radius: 80% 80% 0 0; }
+.quest-screamer__face::before { left: 7%; rotate: -35deg; }.quest-screamer__face::after { right: 7%; rotate: 35deg; }
+.quest-screamer__eye { position: absolute; top: 25%; z-index: 2; width: 23%; height: 11%; overflow: hidden; border-radius: 50%; background: #fff6b0; box-shadow: 0 0 16px #fff, 0 0 50px #f20; }
+.quest-screamer__eye--left { left: 15%; rotate: 13deg; }.quest-screamer__eye--right { right: 15%; rotate: -13deg; }
+.quest-screamer__mouth { position: absolute; left: 50%; bottom: 2%; display: flex; width: 72%; height: 48%; translate: -50%; justify-content: space-around; overflow: hidden; border: 12px solid #080000; border-radius: 46%; background: radial-gradient(ellipse at 50% 80%, #a71820, #350005 62%, #080001); box-shadow: inset 0 0 45px #000; }
+.quest-screamer__mouth b { border: clamp(8px, 1.5vw, 14px) solid transparent; border-top: clamp(40px, 7vw, 75px) solid #e9dfc5; filter: drop-shadow(0 0 4px #fff); }
+.quest-screamer > strong, .quest-screamer > small { z-index: 10; }
+.quest-screamer > strong { top: 4%; font-size: clamp(14px, 3vw, 34px); }.quest-screamer > small { color: #e8b5a2; font-weight: 900; text-shadow: 0 0 12px #f00; }
+
+.mimic-face { z-index: 2; border-radius: 26% 26% 8% 8%; }
+.mimic-face::before, .mimic-face::after { z-index: 1; }
+.mimic-eye { overflow: hidden; height: 16%; }
+.mimic-mouth { height: 68%; bottom: -9%; }
+.mimic-teeth b:nth-child(even) { scale: .72 1.25; }
+.mimic-tongue::after { content: ''; position: absolute; left: 50%; top: 12%; width: 4px; height: 72%; translate: -50%; background: #ff737366; box-shadow: 0 0 7px #f33; }
+.mimic-screamer > strong { z-index: 10; color: #fff; }
+
+@keyframes scare-static { to { translate: 7% -5%; rotate: 2deg; } }
+@keyframes shadow-reach { to { scale: 1.35 1.08; translate: 8% 0; opacity: .92; } }
+@keyframes beast-eye-jolt { 50% { translate: 5px -2px; filter: brightness(2); } }
+@keyframes pupil-hunt { 50% { translate: -20% -65%; scale: 1.4; } }
+@keyframes tongue-thrash { to { translate: -45% -8%; rotate: 5deg; } }
+@keyframes nightmare-lunge { 0% { scale: .015; rotate: -9deg; filter: blur(28px) contrast(3); } 24% { scale: 1.18; rotate: 4deg; filter: blur(0); } 36% { scale: .92; rotate: -3deg; } 52% { scale: 1.35; rotate: 2deg; } 100% { scale: 2.7; filter: contrast(1.8) brightness(.32); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .screamer-noise, .screamer-shadow, .screamer-eye, .screamer-eye b, .mimic-eye b,
+  .quest-screamer__eye b, .screamer-maw > i, .quest-screamer__face { animation: none; }
+}

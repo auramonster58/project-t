@@ -37,7 +37,7 @@ export function useKnightAbilities(weapon: Weapon, onHeal: () => void, canHeal: 
   }, [startCooldown, weapon]);
 
   const activateHeal = useCallback(() => {
-    if (!canHeal || !startCooldown('heal', 30)) return;
+    if (!canHeal || !startCooldown('heal', 70)) return;
     setHealingActive(true);
     let ticks = 0;
     window.clearInterval(healTimer.current);

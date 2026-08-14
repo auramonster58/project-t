@@ -1,32 +1,67 @@
+import { useEffect, useRef, useState } from 'react';
+import { crossbowKnightSheet, swordKnightSheet, type MovementDirection,
+  type SpriteAnimationName } from '../../lib/spriteData';
+import { PixelSprite } from './PixelSprite';
+
 type KnightProps = {
   weapon: 'sword' | 'crossbow';
   screenX: number;
   y: number;
   facing: 1 | -1;
+  direction: MovementDirection;
+  health: number;
   isMoving: boolean;
+  isRunning: boolean;
   isAttacking: boolean;
+  isBlocking: boolean;
+  isVictorious: boolean;
+  attackSequence: number;
 };
 
-export function Knight({ weapon, screenX, y, facing, isMoving, isAttacking }: KnightProps) {
-  const isSwordStrike = weapon === 'sword' && isAttacking;
-  const className = [
-    'knight',
-    isMoving ? 'knight--moving' : '',
-    isAttacking ? 'knight--attacking' : '',
-    weapon === 'crossbow' ? 'knight--crossbow' : '',
-  ].filter(Boolean).join(' ');
+export function Knight(props: KnightProps) {
+  const { weapon, screenX, y, facing, direction, health, isMoving, isRunning, isAttacking,
+    isBlocking, isVictorious, attackSequence } = props;
+  const previousHealth = useRef(health);
+  const [isDamaged, setIsDamaged] = useState(false);
+
+  useEffect(() => {
+    if (health <= 0 || health >= previousHealth.current) {
+      previousHealth.current = health;
+      return;
+    }
+    previousHealth.current = health;
+    setIsDamaged(true);
+    const timer = window.setTimeout(() => setIsDamaged(false), 420);
+    return () => window.clearTimeout(timer);
+  }, [health]);
+
+  const animation = selectAnimation({ weapon, health, isDamaged, isAttacking,
+    attackSequence, isMoving, isRunning, isBlocking, isVictorious });
+  const className = ['knight', `knight--${animation}`, `knight--${weapon}`].join(' ');
 
   return (
-    <div className={className} style={{ left: screenX, top: `${y}%`, '--facing': facing, zIndex: 101 } as React.CSSProperties}>
-      <div className="attack-flash" />
-      <img
-        className={isSwordStrike ? 'knight-strike' : 'knight-idle'}
-        src={weapon === 'crossbow' ? '/assets/knight-crossbow.png'
-          : isSwordStrike ? '/assets/knight-strike.png' : '/assets/knight-portrait.png'}
-        alt={weapon === 'sword' ? 'Тёмный рыцарь с мечом' : 'Тёмный рыцарь с арбалетом'}
-        draggable={false}
-      />
+    <div className={className} style={{ left: screenX, top: `${y}%`, '--facing': facing,
+      '--attack-shift': `${facing * 24}px`, '--hit-shift': `${facing * -8}px`,
+      '--death-lean': `${facing * 18}deg`, '--death-rotate': `${facing * 82}deg`,
+      zIndex: 101 } as React.CSSProperties}>
+      <span className="attack-flash" />
+      <PixelSprite animation={animation} direction={direction}
+        sheet={weapon === 'sword' ? swordKnightSheet : crossbowKnightSheet} />
       <span className="knight-shadow" />
     </div>
   );
+}
+
+function selectAnimation(state: Omit<KnightProps, 'screenX' | 'y' | 'facing' | 'direction'> & { isDamaged: boolean }) {
+  if (state.health === 0) return 'dead' satisfies SpriteAnimationName;
+  if (state.isDamaged) return 'damage' satisfies SpriteAnimationName;
+  if (state.isVictorious) return 'victory' satisfies SpriteAnimationName;
+  if (state.isAttacking) {
+    if (state.weapon === 'sword') return state.attackSequence % 2 ? 'attack1' : 'attack2';
+    return `attack${state.attackSequence % 4 + 1}` as SpriteAnimationName;
+  }
+  if (state.isBlocking) return 'block' satisfies SpriteAnimationName;
+  if (state.isRunning) return 'run' satisfies SpriteAnimationName;
+  if (state.isMoving) return 'walk' satisfies SpriteAnimationName;
+  return 'idle' satisfies SpriteAnimationName;
 }
