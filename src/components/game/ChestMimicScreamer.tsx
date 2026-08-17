@@ -1,17 +1,24 @@
-import { ScreamerEffects } from './ScreamerEffects';
+import { restoredCrossbowKnightSheet, restoredSwordKnightSheet } from '../../lib/spriteData';
+import { PixelSprite } from './PixelSprite';
 
-export function ChestMimicScreamer() {
-  return <div className="mimic-screamer" role="alert">
-    <ScreamerEffects />
-    <div className="mimic-face">
-      <i className="mimic-eye mimic-eye--left"><b /></i>
-      <i className="mimic-eye mimic-eye--right"><b /></i>
-      <div className="mimic-mouth">
-        <span className="mimic-teeth mimic-teeth--top"><b /><b /><b /><b /><b /><b /><b /><b /></span>
-        <i className="mimic-tongue" />
-        <span className="mimic-teeth mimic-teeth--bottom"><b /><b /><b /><b /><b /><b /><b /></span>
-      </div>
+type ChestScreamerProps = {
+  originX: number;
+  originY: number;
+  weapon: 'sword' | 'crossbow';
+};
+
+export function ChestMimicScreamer({ originX, originY, weapon }: ChestScreamerProps) {
+  const style = { '--chest-x': `${originX}px`, '--chest-y': `${originY}%` } as React.CSSProperties;
+  return <div className="chest-skeleton-scare" style={style} role="alert">
+    <span className="chest-skeleton-scare__shade" />
+    <div className="chest-skeleton-scare__monster">
+      <img className="chest-skeleton-scare__image" src="/assets/skeleton-mouth-screamer.png" alt="" />
     </div>
-    <strong>ТЫ ОТКРЫЛ НЕ ТОТ СУНДУК</strong>
+    <div className="chest-skeleton-scare__victim">
+      <PixelSprite animation="damage"
+        sheet={weapon === 'sword' ? restoredSwordKnightSheet : restoredCrossbowKnightSheet} />
+    </div>
+    <span className="chest-skeleton-scare__bite" />
+    <strong>ОН БЫЛ ЗА СУНДУКОМ</strong>
   </div>;
 }

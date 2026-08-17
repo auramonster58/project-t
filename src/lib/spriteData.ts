@@ -92,7 +92,7 @@ export const archerSheet: SpriteSheet = {
 };
 
 export const horrorMonsterSheet: SpriteSheet = {
-  src: '/assets/horror-skeleton-animation-sheet-64bit-transparent.png', width: 1024, height: 1536,
+  src: '/assets/horror-skeleton-sheet-restored-transparent.png', width: 1024, height: 1536,
   animations: {
     screamer: animation([{ x: 12, y: 10, width: 360, height: 610 }], 1400, false),
     idle: animation(row([400, 535, 670, 805], 35, 115, 190), 260),

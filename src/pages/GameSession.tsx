@@ -20,7 +20,7 @@ import { useArrowShots } from '../hooks/useArrowShots';
 import { useEnemyArchers } from '../hooks/useEnemyArchers';
 import { useEnemyGuards } from '../hooks/useEnemyGuards';
 import { useHealthParticles } from '../hooks/useHealthParticles';
-import { useFifthHallQuest } from '../hooks/useFifthHallQuest';
+import { FIFTH_HALL_CHEST, useFifthHallQuest } from '../hooks/useFifthHallQuest';
 import { useKnightControls } from '../hooks/useKnightControls';
 import { usePassageAmbush, type AmbushStrike } from '../hooks/usePassageAmbush';
 import { usePlayerHealth } from '../hooks/usePlayerHealth';
@@ -247,7 +247,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   useEffect(() => {
     if (fifthQuest.state !== 'chest-scare') return;
     const stopSound = playScreamerSound('mimic');
-    const timer = window.setTimeout(fifthQuest.finishChestScare, 1450);
+    const timer = window.setTimeout(fifthQuest.finishChestScare, 3000);
     return () => {
       window.clearTimeout(timer);
       stopSound();
@@ -343,7 +343,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       {ambush.phase === 'fake-death' && <FakeDeathOverlay weapon={weapon} />}
       {scarePhase === 'screamer' && <FakeDeathOverlay weapon={weapon} />}
       {fifthQuest.state === 'scare' && <QuestScreamer />}
-      {fifthQuest.state === 'chest-scare' && <ChestMimicScreamer />}
+      {fifthQuest.state === 'chest-scare' && <ChestMimicScreamer weapon={weapon}
+        originX={FIFTH_HALL_CHEST.x - controls.cameraX} originY={FIFTH_HALL_CHEST.y} />}
       <QuestNoteOverlay open={fifthQuest.noteOpen} />
       {scarePhase === 'defeat' && <GameResult title="ТЕБЯ НАПУГАЛИ" subtitle="Верхняя комната оказалась ловушкой"
         onRestart={onRestart} onExitMenu={onExitMenu} />}
