@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useBranchControls } from '../../hooks/useBranchControls';
+import { useGameViewScale } from '../../hooks/useGameViewScale';
 import type { BranchRoute as BranchRouteName } from '../../lib/gameSave';
 import { GameResult } from './GameResult';
 import { Knight } from './Knight';
@@ -18,11 +19,14 @@ type BranchRouteProps = {
 
 export function BranchRoute(props: BranchRouteProps) {
   const controls = useBranchControls(props.route, props.initialDistance);
+  const viewScale = useGameViewScale();
   const viewportHeight = typeof window === 'undefined' ? 800 : window.innerHeight;
   const viewportWidth = typeof window === 'undefined' ? 1200 : window.innerWidth;
   const worldY = controls.distance * viewportHeight / 100;
-  const cameraY = Math.min(4 * viewportHeight, Math.max(0, worldY - viewportHeight / 2));
-  const screenY = (worldY - cameraY) / viewportHeight * 100;
+  const visibleWorldHeight = viewportHeight / viewScale;
+  const cameraY = Math.min(5 * viewportHeight - visibleWorldHeight,
+    Math.max(0, worldY - visibleWorldHeight / 2));
+  const screenY = (worldY - cameraY) * viewScale / viewportHeight * 100;
 
   useEffect(() => props.onProgress(controls.distance), [controls.distance, props.onProgress]);
   useEffect(() => {
@@ -32,7 +36,8 @@ export function BranchRoute(props: BranchRouteProps) {
   const rooms = Array.from({ length: 5 }, (_, index) => props.route === 'up' ? 5 - index : index + 1);
   return (
     <main className={`game-page branch-route branch-route--${props.route}`}>
-      <div className="branch-world" style={{ transform: `translate3d(0, ${-cameraY}px, 0)` }}>
+      <div className="branch-world" style={{ transformOrigin: '0 0',
+        transform: `translate3d(0, ${-cameraY * viewScale}px, 0) scale(${viewScale})` }}>
         {rooms.map((room) => <section className="branch-room" key={room}>
           <RoomDecor room={room} />
           <i className="branch-wall branch-wall--left" />

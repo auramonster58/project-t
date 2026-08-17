@@ -24,6 +24,7 @@ import { useEnemyArchers } from '../hooks/useEnemyArchers';
 import { useEnemyGuards } from '../hooks/useEnemyGuards';
 import { useHealthParticles } from '../hooks/useHealthParticles';
 import { FIFTH_HALL_CHEST, useFifthHallQuest } from '../hooks/useFifthHallQuest';
+import { useGameViewScale } from '../hooks/useGameViewScale';
 import { useKnightControls } from '../hooks/useKnightControls';
 import { usePassageAmbush, type AmbushStrike } from '../hooks/usePassageAmbush';
 import { usePlayerHealth } from '../hooks/usePlayerHealth';
@@ -54,6 +55,7 @@ type GameSessionProps = {
 };
 
 export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }: GameSessionProps) {
+  const viewScale = useGameViewScale();
   const [enemies, setEnemies] = useState(createEnemies);
   const traps = useMemo(createTraps, []);
   const [keys, setKeys] = useState<DroppedKey[]>([]);
@@ -171,7 +173,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   const passageBlockers = useMemo(() => enemies.filter((enemy) => enemy.kind === 'monster'), [enemies]);
   const controls = useKnightControls(strikeEnemy, maxWorldX, WORLD_WIDTH, ROOM_WIDTH, instantShot,
     bossMode ? 2 : 1, upperRoomUnlocked, passageBlockers,
-    player.health > 0 && !completed && branchRoute === null && hidingWardrobeId === null);
+    player.health > 0 && !completed && branchRoute === null && hidingWardrobeId === null, viewScale);
   const positionRef = useRef({ x: controls.worldX, y: controls.y });
   const nearbyWardrobe = useMemo(() => WARDROBES.find((wardrobe) => wardrobe.room <= unlockedRoom
     && Math.hypot(wardrobe.x - controls.worldX, (wardrobe.y - controls.y) * 9) < 145),
@@ -367,11 +369,12 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
 
   const currentRoom = Math.min(FINAL_ROOM + 1, Math.floor(controls.worldX / ROOM_WIDTH) + 1);
   const torchRoom = currentRoom <= 2 ? currentRoom - 1 : null;
-  const torchLeftX = torchRoom === null ? 0 : torchRoom * ROOM_WIDTH + 125 - controls.cameraX;
-  const torchRightX = torchRoom === null ? 0 : (torchRoom + 1) * ROOM_WIDTH - 125 - controls.cameraX;
+  const torchLeftX = torchRoom === null ? 0 : (torchRoom * ROOM_WIDTH + 125 - controls.cameraX) * viewScale;
+  const torchRightX = torchRoom === null ? 0 : ((torchRoom + 1) * ROOM_WIDTH - 125 - controls.cameraX) * viewScale;
   return (
-    <main className={`game-page ${torchRoom !== null ? 'game-page--torch-lit' : ''} ${weapon === 'sword' && abilities.owlSightActive ? 'game-page--owl-sight' : ''}`} style={{ '--light-x': `${controls.screenX}px`, '--light-y': `${controls.y}%` } as React.CSSProperties}>
-      <div className="scrolling-world" style={{ width: WORLD_WIDTH, transform: `translate3d(${-controls.cameraX}px, 0, 0)` }}>
+    <main className={`game-page ${torchRoom !== null ? 'game-page--torch-lit' : ''} ${weapon === 'sword' && abilities.owlSightActive ? 'game-page--owl-sight' : ''}`} style={{ '--light-x': `${controls.screenX}px`, '--light-y': `${controls.y}%`, '--world-scale': viewScale } as React.CSSProperties}>
+      <div className="scrolling-world" style={{ width: WORLD_WIDTH, height: `${100 / viewScale}%`,
+        transformOrigin: '0 0', transform: `translate3d(${-controls.cameraX * viewScale}px, 0, 0) scale(${viewScale})` }}>
         <CastleScene unlockedRoom={unlockedRoom} ambushResolved={ambush.resolved}
           decoyGuardsReleased={decoyGuardsReleased} />
         {enemies.map((enemy) => <Enemy key={enemy.id} enemy={enemy} facing={enemy.x > controls.worldX ? -1 : 1}
@@ -418,7 +421,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       {scarePhase === 'screamer' && <FakeDeathOverlay weapon={weapon} />}
       {fifthQuest.state === 'scare' && <QuestScreamer />}
       {fifthQuest.state === 'chest-scare' && <ChestMimicScreamer weapon={weapon}
-        originX={FIFTH_HALL_CHEST.x - controls.cameraX} originY={FIFTH_HALL_CHEST.y} />}
+        originX={(FIFTH_HALL_CHEST.x - controls.cameraX) * viewScale} originY={FIFTH_HALL_CHEST.y} />}
       <QuestNoteOverlay open={fifthQuest.noteOpen} />
       {unlockedRoom > FORK_ROOM_INDEX && controls.worldX >= FORK_POSITION - 160
         && <CastleFork onChoose={setBranchRoute} />}

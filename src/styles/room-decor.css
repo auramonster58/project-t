@@ -95,9 +95,10 @@
 @keyframes chandelier-glow { to { opacity: .7; scale: 1.04; } }
 @keyframes decor-dust { to { translate: 12px -24px; opacity: .25; } }
 
-@media (max-width: 700px) {
+@media (pointer: coarse), (max-width: 700px) {
   .decor-table { width: 125px; height: 52px; }.decor-bookshelf { width: 92px; height: 130px; }.decor-barrels { scale: .8; }
-  .chandelier { scale: .8; transform-origin: 50% 0; }.chandelier-light { width: 310px; }
+  .chandelier { scale: .8; transform-origin: 50% 0; }.chandelier-light { width: 310px; filter: blur(5px); }
+  .decor-dust { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

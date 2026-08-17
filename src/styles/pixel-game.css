@@ -96,9 +96,9 @@
 @keyframes pixel-flame { 50% { scale: .8 1.15; translate: 2px -3px; } }
 @keyframes pixel-mist { to { translate: 190px 0; } }
 
-@media (max-width: 700px) {
-  .knight { width: 106px; height: 165px; }.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: 170px; }
-  .gate-guard { width: 102px; height: 150px; }.gate-guard--attack1, .gate-guard--attack2 { width: 154px; }
+@media (pointer: coarse), (max-width: 700px) {
+  .knight { width: 86px; height: 134px; }.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: 138px; }
+  .gate-guard { width: 86px; height: 126px; }.gate-guard--attack1, .gate-guard--attack2 { width: 130px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

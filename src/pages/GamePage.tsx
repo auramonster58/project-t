@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import { FullscreenButton } from '../components/game/FullscreenButton';
 import { GameMenu } from '../components/game/GameMenu';
 import { NewspaperIntro } from '../components/game/NewspaperIntro';
 import { clearGameSave } from '../lib/gameSave';
@@ -46,15 +47,17 @@ export function GamePage() {
   };
 
   if (screen === 'menu' || !authSession) {
-    return <GameMenu title="ГОТОВ К БОЮ?" subtitle="Пройди десять залов и доберись до Круга судьбы"
-      primaryLabel="НАЧАТЬ ИГРУ" onPrimary={startGame} session={authSession} authReady={authReady} />;
+    return <><GameMenu title="ГОТОВ К БОЮ?" subtitle="Пройди десять залов и доберись до Круга судьбы"
+      primaryLabel="НАЧАТЬ ИГРУ" onPrimary={startGame} session={authSession} authReady={authReady} />
+      <FullscreenButton /></>;
   }
 
   if (screen === 'intro') {
-    return <NewspaperIntro onFinish={beginStory} onExit={() => setScreen('menu')} />;
+    return <><NewspaperIntro onFinish={beginStory} onExit={() => setScreen('menu')} />
+      <FullscreenButton /></>;
   }
 
   const isBossAccount = authSession.user.email?.toLowerCase() === BOSS_ACCOUNT_EMAIL;
-  return <GameSession key={gameRun} userId={authSession.user.id} bossMode={isBossAccount}
-    onRestart={restartGame} onExitMenu={() => setScreen('menu')} />;
+  return <><GameSession key={gameRun} userId={authSession.user.id} bossMode={isBossAccount}
+    onRestart={restartGame} onExitMenu={() => setScreen('menu')} /><FullscreenButton /></>;
 }

@@ -26,10 +26,10 @@ export function TouchControls({ onMove, onAttack }: TouchControlsProps) {
   return (
     <div className="touch-controls">
       <div className="move-pad">
-        <button onPointerDown={startMoving(0, -1)} onPointerUp={stopMoving} onPointerCancel={stopMoving} aria-label="Идти вверх">↑</button>
-        <button onPointerDown={startMoving(-1, 0)} onPointerUp={stopMoving} onPointerCancel={stopMoving} aria-label="Идти влево">←</button>
-        <button onPointerDown={startMoving(1, 0)} onPointerUp={stopMoving} onPointerCancel={stopMoving} aria-label="Идти вправо">→</button>
-        <button onPointerDown={startMoving(0, 1)} onPointerUp={stopMoving} onPointerCancel={stopMoving} aria-label="Идти вниз">↓</button>
+        <button className="move-up" onPointerDown={startMoving(0, -1)} onPointerUp={stopMoving} onPointerCancel={stopMoving} aria-label="Идти вверх">↑</button>
+        <button className="move-left" onPointerDown={startMoving(-1, 0)} onPointerUp={stopMoving} onPointerCancel={stopMoving} aria-label="Идти влево">←</button>
+        <button className="move-right" onPointerDown={startMoving(1, 0)} onPointerUp={stopMoving} onPointerCancel={stopMoving} aria-label="Идти вправо">→</button>
+        <button className="move-down" onPointerDown={startMoving(0, 1)} onPointerUp={stopMoving} onPointerCancel={stopMoving} aria-label="Идти вниз">↓</button>
       </div>
       <div>
         <button className="attack-button" onPointerDown={(event) => { event.preventDefault(); onAttack(); }} aria-label="Удар">⚔</button>

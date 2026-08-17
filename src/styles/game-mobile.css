@@ -47,22 +47,18 @@
   }
 
   .touch-controls .move-pad {
-    width: 140px;
-    height: 126px;
+    width: 192px;
+    height: 192px;
+    grid-template: repeat(3, 64px) / repeat(3, 64px);
   }
 
   .touch-controls button {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
     border-width: 2px;
     background: #11151aed;
     font-size: 25px;
   }
-
-  .move-pad button:first-child { left: 40px; }
-  .move-pad button:nth-child(2) { top: 46px; }
-  .move-pad button:nth-child(3) { top: 46px; }
-  .move-pad button:last-child { top: 66px; left: 40px; }
 
   .touch-controls .attack-button {
     width: 74px;
@@ -124,11 +120,6 @@
   }
 
   .ability-label { display: none; }
-
-  .touch-controls .move-pad {
-    scale: .86;
-    transform-origin: left bottom;
-  }
 
   .weapon-switch {
     bottom: calc(max(10px, env(safe-area-inset-bottom)) + 78px);

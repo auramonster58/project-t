@@ -1,0 +1,40 @@
+.fullscreen-button {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  right: max(150px, calc(env(safe-area-inset-right) + 126px));
+  z-index: 245;
+  display: flex;
+  min-width: 0;
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid #716658;
+  border-radius: 0;
+  background: #080909e8;
+  color: #d8d0c6;
+  font: 800 9px ui-monospace, monospace;
+  letter-spacing: .09em;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.fullscreen-button span { font-size: 19px; line-height: 1; }
+.game-menu-screen + .fullscreen-button {
+  right: auto;
+  left: max(18px, env(safe-area-inset-left));
+}
+
+@media (pointer: coarse), (max-width: 700px) {
+  .fullscreen-button {
+    top: max(102px, calc(env(safe-area-inset-top) + 92px));
+    right: max(10px, env(safe-area-inset-right));
+    min-height: 42px;
+  }
+
+  .fullscreen-button b { display: none; }
+  .game-menu-screen + .fullscreen-button {
+    top: max(10px, env(safe-area-inset-top));
+    right: auto;
+    left: max(10px, env(safe-area-inset-left));
+  }
+}

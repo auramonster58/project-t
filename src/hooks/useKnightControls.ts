@@ -84,6 +84,7 @@ export function useKnightControls(
   upperRoomUnlocked = false,
   movementBlockers: MovementBlocker[] = [],
   canControl = true,
+  viewScale = 1,
 ) {
   const [worldX, setWorldX] = useState(150);
   const [y, setY] = useState(52);
@@ -203,9 +204,10 @@ export function useKnightControls(
     return () => cancelAnimationFrame(frame);
   }, [roomWidth, speedMultiplier, upperRoomUnlocked, worldWidth]);
 
-  const anchor = typeof window === 'undefined' ? 300 : Math.min(window.innerWidth * 0.3, 340);
+  const anchor = typeof window === 'undefined' ? 300 : Math.min(window.innerWidth * 0.3, 340) / viewScale;
   const viewportWidth = typeof window === 'undefined' ? 1200 : window.innerWidth;
-  const cameraX = Math.min(Math.max(0, worldX - anchor), Math.max(0, worldWidth - viewportWidth));
-  return { worldX, cameraX, screenX: worldX - cameraX, y, facing, direction, isMoving, isAttacking,
+  const visibleWorldWidth = viewportWidth / viewScale;
+  const cameraX = Math.min(Math.max(0, worldX - anchor), Math.max(0, worldWidth - visibleWorldWidth));
+  return { worldX, cameraX, screenX: (worldX - cameraX) * viewScale, y, facing, direction, isMoving, isAttacking,
     attackSequence, attack, move, teleport };
 }
