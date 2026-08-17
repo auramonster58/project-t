@@ -70,6 +70,21 @@ export const restoredCrossbowKnightSheet: SpriteSheet = {
   src: '/assets/hero-crossbow-sheet-restored-transparent.png',
 };
 
+export const swordsmanGuardSheet: SpriteSheet = {
+  src: '/assets/swordsman-guard-sheet-transparent.png', width: 1024, height: 1536,
+  animations: {
+    idle: animation(row([360, 500, 625, 755], 20, 125, 165), 300),
+    walk: animation(row([360, 500, 625, 755], 195, 125, 165), 150),
+    run: animation(row([360, 500, 625, 755], 360, 130, 165), 105),
+    attack1: animation(row([20, 205, 390, 585, 790], 525, 195, 165), 82, false),
+    attack2: animation(row([20, 220, 440, 665], 700, 205, 165), 88, false),
+    damage: animation(row([25, 175, 310, 440], 865, 140, 170), 100, false),
+    dead: animation(row([25, 220, 430, 625], 1030, 205, 140), 165, false),
+    block: animation(row([45, 175, 300, 425], 1180, 125, 170), 145),
+    victory: animation([{ x: 55, y: 1350, width: 150, height: 180 }], 400),
+  },
+};
+
 export const archerSheet: SpriteSheet = {
   src: '/assets/dark-archer-animation-sheet-64bit-transparent.png', width: 1024, height: 1536,
   animations: {

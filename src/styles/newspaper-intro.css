@@ -22,7 +22,7 @@
 .missing-poster {
   display: block;
   width: min(92vw, 620px);
-  max-height: calc(100vh - 112px);
+  max-height: calc(100dvh - 112px);
   object-fit: contain;
   filter: drop-shadow(0 24px 40px #000);
   animation: newspaper-page-in 420ms steps(7) both;
@@ -60,7 +60,7 @@
   }
 
   .missing-poster {
-    max-height: calc(100vh - 92px);
+    max-height: calc(100dvh - 92px);
   }
 
   .newspaper-actions {

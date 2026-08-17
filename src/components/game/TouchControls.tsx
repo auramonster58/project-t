@@ -8,16 +8,20 @@ type TouchControlsProps = {
 export function TouchControls({ onMove, onAttack }: TouchControlsProps) {
   const moveTimer = useRef<number>();
 
-  const stopMoving = () => window.clearInterval(moveTimer.current);
+  const clearMoveTimer = () => window.clearInterval(moveTimer.current);
+  const stopMoving = () => {
+    clearMoveTimer();
+    onMove(0, 0);
+  };
   const startMoving = (x: -1 | 0 | 1, y: -1 | 0 | 1) => (event: React.PointerEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
-    stopMoving();
+    clearMoveTimer();
     onMove(x, y);
     moveTimer.current = window.setInterval(() => onMove(x, y), 70);
   };
 
-  useEffect(() => stopMoving, []);
+  useEffect(() => clearMoveTimer, []);
 
   return (
     <div className="touch-controls">

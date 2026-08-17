@@ -1,0 +1,105 @@
+.room-decor { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.chandelier {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 190px;
+  height: 34%;
+  translate: -50% 0;
+  transform-origin: 50% 0;
+  animation: chandelier-sway 4.8s ease-in-out infinite alternate;
+}
+
+.chandelier-chain {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 5px;
+  height: 62%;
+  translate: -50% 0;
+  background: repeating-linear-gradient(0deg, #252321 0 6px, #777069 7px 10px);
+  box-shadow: 2px 0 #000;
+}
+
+.chandelier-frame {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  width: 150px;
+  height: 32px;
+  translate: -50% 0;
+  border: 7px solid #49423a;
+  border-top: 0;
+  border-radius: 0 0 50% 50%;
+  box-shadow: 0 7px 7px #000b;
+}
+
+.chandelier-frame::before {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  width: 4px;
+  height: 36px;
+  translate: -50% 0;
+  background: #575047;
+  content: '';
+}
+
+.chandelier-frame b { position: absolute; bottom: 13px; width: 7px; height: 24px; background: #b5a47b; }
+.chandelier-frame b::after {
+  position: absolute;
+  left: 50%;
+  bottom: 19px;
+  width: 13px;
+  height: 20px;
+  translate: -50% 0;
+  border-radius: 50% 50% 45% 45%;
+  background: #ffd56b;
+  box-shadow: 0 0 8px #ffdf7d, 0 0 22px #e87924;
+  content: '';
+  animation: chandelier-flame 240ms steps(2) infinite alternate;
+}
+
+.chandelier-frame b:nth-child(1) { left: 7px; }
+.chandelier-frame b:nth-child(2) { left: 45px; }
+.chandelier-frame b:nth-child(3) { right: 45px; }
+.chandelier-frame b:nth-child(4) { right: 7px; }
+.chandelier-light {
+  position: absolute;
+  left: 50%;
+  bottom: -125px;
+  width: 390px;
+  height: 260px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #ffba4930, #d76b1617 42%, transparent 72%);
+  filter: blur(9px);
+  animation: chandelier-glow 900ms ease-in-out infinite alternate;
+}
+
+.decor-rug { position: absolute; left: 34%; top: 46%; width: 32%; height: 24%; border: 4px solid #4c2529; background: repeating-linear-gradient(90deg, #341319 0 55px, #4d1d24 56px 110px); box-shadow: inset 0 0 20px #160407; }
+.decor-table { position: absolute; left: 46%; top: 57%; width: 170px; height: 65px; translate: -50% -50%; border: 6px solid #24150c; background: repeating-linear-gradient(90deg, #4c2d18 0 34px, #694020 35px 40px); box-shadow: 8px 12px 9px #000a; }
+.decor-table i { position: absolute; top: 58px; width: 15px; height: 55px; background: #2e1a0f; }.decor-table i:first-child { left: 12px; }.decor-table i:nth-child(2) { right: 12px; }
+.decor-table span { position: absolute; left: 50%; top: -17px; width: 28px; height: 18px; translate: -50% 0; border: 3px solid #78633e; background: #372617; }
+.decor-chair { position: absolute; top: 62%; width: 48px; height: 72px; border: 5px solid #2b190f; background: #53321c; box-shadow: 6px 9px 6px #000a; }.decor-chair--left { left: 30%; }.decor-chair--right { right: 29%; }
+.decor-chair i { position: absolute; bottom: -35px; width: 8px; height: 38px; background: #28170e; }.decor-chair i:first-child { left: 3px; }.decor-chair i:last-child { right: 3px; }
+.decor-bookshelf { position: absolute; left: 8%; top: 24%; display: flex; width: 125px; height: 155px; align-items: flex-end; gap: 5px; padding: 13px; border: 7px solid #24140c; background: repeating-linear-gradient(0deg, #382113 0 43px, #6a4021 44px 49px); box-shadow: 8px 10px 8px #000b; }
+.decor-bookshelf i { width: 11px; height: 40%; background: #5d2830; box-shadow: inset -3px 0 #1b0d0f; }.decor-bookshelf i:nth-child(even) { height: 58%; background: #3d4b42; }
+.decor-barrels { position: absolute; right: 8%; top: 61%; display: flex; align-items: flex-end; }.decor-barrels i { width: 48px; height: 66px; margin-left: -9px; border: 5px solid #25150d; border-radius: 45%; background: repeating-linear-gradient(90deg, #412515 0 13px, #6b3e20 14px 19px); box-shadow: inset 0 9px #17100c, 6px 8px 7px #000a; }.decor-barrels i:nth-child(2) { height: 58px; }
+.decor-dust { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #e4bd7277; box-shadow: 0 0 6px #d79642; animation: decor-dust 3s ease-in-out infinite alternate; }.decor-dust--a { left: 25%; top: 42%; }.decor-dust--b { left: 62%; top: 35%; animation-delay: -1s; }.decor-dust--c { left: 74%; top: 66%; animation-delay: -2s; }
+.room-decor--1 .decor-table { left: 58%; }.room-decor--1 .decor-rug { left: 42%; }.room-decor--1 .decor-bookshelf { left: auto; right: 7%; }.room-decor--1 .decor-barrels { right: auto; left: 8%; }
+.room-decor--2 .decor-table { left: 38%; }.room-decor--2 .decor-chair--right { right: 39%; }.room-decor--2 .chandelier { left: 58%; }
+
+@keyframes chandelier-sway { to { rotate: 1.4deg; } }
+@keyframes chandelier-flame { to { scale: .78 1.18; translate: -50% -2px; } }
+@keyframes chandelier-glow { to { opacity: .7; scale: 1.04; } }
+@keyframes decor-dust { to { translate: 12px -24px; opacity: .25; } }
+
+@media (max-width: 700px) {
+  .decor-table { width: 125px; height: 52px; }.decor-bookshelf { width: 92px; height: 130px; }.decor-barrels { scale: .8; }
+  .chandelier { scale: .8; transform-origin: 50% 0; }.chandelier-light { width: 310px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chandelier, .chandelier-frame b::after, .chandelier-light, .decor-dust { animation: none; }
+}

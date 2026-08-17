@@ -117,6 +117,7 @@ export function useKnightControls(
 
   const move = useCallback((directionX: -1 | 0 | 1, directionY: -1 | 0 | 1) => {
     if (!canControlRef.current) return;
+    setIsMoving(Boolean(directionX || directionY));
     if (directionX) setFacing(directionX);
     if (directionY) setDirection(directionY < 0 ? 'up' : 'down');
     else if (directionX) setDirection(directionX < 0 ? 'left' : 'right');

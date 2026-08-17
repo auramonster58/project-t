@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AbilityBar } from '../components/game/AbilityBar';
 import { AmbushMonster } from '../components/game/AmbushMonster';
 import { ArrowShot } from '../components/game/ArrowShot';
+import { BranchRoute } from '../components/game/BranchRoute';
+import { CastleFork } from '../components/game/CastleFork';
 import { CastleScene } from '../components/game/CastleScene';
 import { ChestMimicScreamer } from '../components/game/ChestMimicScreamer';
 import { CastleTrap, ExitPortal, KeyDrop } from '../components/game/CastleProgress';
@@ -14,6 +16,7 @@ import { HealthParticle } from '../components/game/HealthParticle';
 import { Knight } from '../components/game/Knight';
 import { QuestScreamer } from '../components/game/QuestScreamer';
 import { TouchControls } from '../components/game/TouchControls';
+import { Wardrobe } from '../components/game/Wardrobe';
 import { WeaponSwitch } from '../components/game/WeaponSwitch';
 import { useKnightAbilities } from '../hooks/useKnightAbilities';
 import { useArrowShots } from '../hooks/useArrowShots';
@@ -26,12 +29,18 @@ import { usePassageAmbush, type AmbushStrike } from '../hooks/usePassageAmbush';
 import { usePlayerHealth } from '../hooks/usePlayerHealth';
 import { useWeaponSwitch } from '../hooks/useWeaponSwitch';
 import { combatDistance, CROSSBOW_DAMAGE, selectTarget, SWORD_DAMAGE } from '../lib/gameCombat';
-import { createDecoyGuards, createEnemies, createTraps, FINAL_ROOM, isInTorchLight, PORTAL_POSITION,
-  ROOM_WIDTH, THIRD_PASSAGE_CENTER, UPPER_ROOM_INDEX, WORLD_WIDTH } from '../lib/gameData';
-import { loadGameSave, saveGame } from '../lib/gameSave';
+import { createEnemies, createPassageMonsters, createTraps, FINAL_ROOM, FORK_POSITION,
+  FORK_ROOM_INDEX, isInTorchLight, PORTAL_POSITION, ROOM_WIDTH, THIRD_PASSAGE_CENTER,
+  UPPER_ROOM_INDEX, WARDROBES, WORLD_WIDTH } from '../lib/gameData';
+import { EMPTY_ACHIEVEMENT_STATS, loadGameSave, saveGame,
+  type AchievementStats, type BranchRoute as BranchRouteName } from '../lib/gameSave';
 import { playScreamerSound } from '../lib/screamerSound';
 import '../styles/game-scene.css';
 import '../styles/game-ui.css';
+import '../styles/game-mobile.css';
+import '../styles/game-branch.css';
+import '../styles/wardrobe.css';
+import '../styles/room-decor.css';
 import '../styles/screamers.css';
 import '../styles/pixel-game.css';
 
@@ -61,7 +70,16 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   const [saveReady, setSaveReady] = useState(false);
   const [playerDefeatVisible, setPlayerDefeatVisible] = useState(false);
   const [completionVisible, setCompletionVisible] = useState(false);
+  const [branchRoute, setBranchRoute] = useState<BranchRouteName | null>(null);
+  const [branchDistance, setBranchDistance] = useState<number>();
+  const [achievementStats, setAchievementStats] = useState<AchievementStats>(
+    () => ({ ...EMPTY_ACHIEVEMENT_STATS }),
+  );
+  const [hidingWardrobeId, setHidingWardrobeId] = useState<number | null>(null);
   const droppedHealthEnemies = useRef(new Set<number>());
+  const deathRecorded = useRef(false);
+  const hidingWardrobeRef = useRef<number | null>(null);
+  hidingWardrobeRef.current = hidingWardrobeId;
   const ambushAttackRef = useRef<(x: number, y: number, facing: 1 | -1, range: number) => AmbushStrike | null>(() => null);
   const fifthQuestRestoreRef = useRef<(noteRead: boolean, keyCollected: boolean, chestOpened: boolean) => void>(() => undefined);
   const enemyHealthSignature = enemies.map((enemy) => `${enemy.id}:${enemy.health}`).join('|');
@@ -74,7 +92,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       const healthById = new Map(saved.enemies.map((enemy) => [enemy.id, enemy.health]));
       setEnemies((current) => {
         const restored = saved.decoyGuardsReleased
-          ? [...current, ...createDecoyGuards().filter((guard) => !current.some((enemy) => enemy.id === guard.id))]
+          ? [...current, ...createPassageMonsters().filter((monster) => !current.some((enemy) => enemy.id === monster.id))]
           : current;
         return restored.map((enemy) => ({ ...enemy, health: healthById.get(enemy.id) ?? enemy.health }));
       });
@@ -83,6 +101,9 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       setCompleted(saved.completed);
       setUpperRoomUnlocked(saved.ambushResolved ?? false);
       setDecoyGuardsReleased(saved.decoyGuardsReleased ?? false);
+      setBranchRoute(saved.branchRoute ?? null);
+      setBranchDistance(saved.branchDistance);
+      setAchievementStats({ ...EMPTY_ACHIEVEMENT_STATS, ...saved.achievementStats });
       fifthQuestRestoreRef.current(saved.fifthHallNoteRead ?? false, saved.fifthHallKeyCollected ?? false,
         saved.fifthHallChestOpened ?? false);
       ambushRestoreRef.current(saved.ambushResolved ?? false);
@@ -100,6 +121,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
     if (ambushStrike) {
       if (weapon === 'crossbow') shootArrow(worldX, y, ambushStrike.x, ambushStrike.y);
       if (ambushStrike.damage !== null) {
+        setAchievementStats((stats) => ({ ...stats, totalKills: stats.totalKills + 1 }));
         setShownDamage(Math.round(ambushStrike.damage));
         window.setTimeout(() => setShownDamage(null), 420);
       }
@@ -114,6 +136,9 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       }
       const regularDamage = weapon === 'crossbow' ? CROSSBOW_DAMAGE : abilities.rageActive ? SWORD_DAMAGE * 2 : SWORD_DAMAGE;
       const damage = bossMode ? target.health : regularDamage;
+      if (target.health <= damage) {
+        setAchievementStats((stats) => ({ ...stats, totalKills: stats.totalKills + 1 }));
+      }
       const isLastInRoom = target.health <= damage && current
         .filter((enemy) => enemy.room === target.room && enemy.health > 0).length === 1;
       if (isLastInRoom) {
@@ -140,17 +165,35 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
     });
   }, [abilities.autoAimActive, abilities.rageActive, bossMode, shootArrow, unlockedRoom, weapon]);
 
-  const maxWorldX = unlockedRoom === FINAL_ROOM ? WORLD_WIDTH - 100 : (unlockedRoom + 1) * ROOM_WIDTH - 90;
+  const unlockedMaxX = unlockedRoom === FINAL_ROOM ? WORLD_WIDTH - 100 : (unlockedRoom + 1) * ROOM_WIDTH - 90;
+  const maxWorldX = unlockedRoom > FORK_ROOM_INDEX ? Math.min(unlockedMaxX, FORK_POSITION) : unlockedMaxX;
   const instantShot = weapon === 'crossbow' && abilities.hermesActive;
-  const summonedBlockers = useMemo(() => enemies.filter((enemy) => enemy.id >= 9101 && enemy.id <= 9104), [enemies]);
+  const passageBlockers = useMemo(() => enemies.filter((enemy) => enemy.kind === 'monster'), [enemies]);
   const controls = useKnightControls(strikeEnemy, maxWorldX, WORLD_WIDTH, ROOM_WIDTH, instantShot,
-    bossMode ? 2 : 1, upperRoomUnlocked, summonedBlockers, player.health > 0 && !completed);
+    bossMode ? 2 : 1, upperRoomUnlocked, passageBlockers,
+    player.health > 0 && !completed && branchRoute === null && hidingWardrobeId === null);
   const positionRef = useRef({ x: controls.worldX, y: controls.y });
+  const nearbyWardrobe = useMemo(() => WARDROBES.find((wardrobe) => wardrobe.room <= unlockedRoom
+    && Math.hypot(wardrobe.x - controls.worldX, (wardrobe.y - controls.y) * 9) < 145),
+  [controls.worldX, controls.y, unlockedRoom]);
+  const toggleWardrobe = useCallback(() => {
+    setHidingWardrobeId((current) => current === null ? nearbyWardrobe?.id ?? null : null);
+  }, [nearbyWardrobe]);
   const ambush = usePassageAmbush(positionRef, bossMode);
   const fifthQuest = useFifthHallQuest(positionRef, controls.teleport);
   fifthQuestRestoreRef.current = fifthQuest.restore;
   ambushAttackRef.current = ambush.attack;
   ambushRestoreRef.current = ambush.restoreResolved;
+
+  useEffect(() => {
+    const toggle = (event: KeyboardEvent) => {
+      if (event.code !== 'KeyE' || (hidingWardrobeId === null && !nearbyWardrobe)) return;
+      event.preventDefault();
+      toggleWardrobe();
+    };
+    window.addEventListener('keydown', toggle);
+    return () => window.removeEventListener('keydown', toggle);
+  }, [hidingWardrobeId, nearbyWardrobe, toggleWardrobe]);
 
   useEffect(() => {
     if (!saveReady) return;
@@ -166,25 +209,37 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
         fifthHallNoteRead: fifthQuest.state !== 'waiting',
         fifthHallKeyCollected: ['complete', 'chest-scare', 'finished'].includes(fifthQuest.state),
         fifthHallChestOpened: fifthQuest.state === 'finished',
+        branchRoute: branchRoute ?? undefined,
+        branchDistance,
+        achievementStats,
       }).catch(() => undefined);
     }, 500);
     return () => window.clearTimeout(timer);
-  }, [ambush.resolved, completed, decoyGuardsReleased, enemyHealthSignature, fifthQuest.state, keys,
-    player.health, saveReady, unlockedRoom, userId]);
+  }, [achievementStats, ambush.resolved, branchDistance, branchRoute, completed, decoyGuardsReleased,
+    enemyHealthSignature, fifthQuest.state, keys, player.health, saveReady, unlockedRoom, userId]);
 
   const healthDrops = useHealthParticles(positionRef, player.heal);
   dropHealthRef.current = healthDrops.dropHealth;
+  const takeDamageUnlessHidden = useCallback((damage: number) => {
+    if (hidingWardrobeRef.current === null) player.takeDamage(damage);
+  }, [player.takeDamage]);
+  const activeRoom = branchRoute || hidingWardrobeId !== null ? -1 : unlockedRoom;
   const { enemyArrows, shootingArchers } = useEnemyArchers(
-    enemies, setEnemies, positionRef, unlockedRoom, player.takeDamage,
+    enemies, setEnemies, positionRef, activeRoom, takeDamageUnlessHidden,
   );
-  const guardAttacks = useEnemyGuards(enemies, setEnemies, positionRef, unlockedRoom,
-    ambush.resolved, player.takeDamage);
+  const guardAttacks = useEnemyGuards(enemies, setEnemies, positionRef, activeRoom,
+    ambush.resolved, takeDamageUnlessHidden);
   useEffect(() => { positionRef.current = { x: controls.worldX, y: controls.y }; }, [controls.worldX, controls.y]);
 
   useEffect(() => {
     if (player.health > 0) {
       setPlayerDefeatVisible(false);
+      deathRecorded.current = false;
       return;
+    }
+    if (!deathRecorded.current) {
+      deathRecorded.current = true;
+      setAchievementStats((stats) => ({ ...stats, deaths: stats.deaths + 1 }));
     }
     const timer = window.setTimeout(() => setPlayerDefeatVisible(true), 850);
     return () => window.clearTimeout(timer);
@@ -207,8 +262,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
     const isNearDecoys = Math.abs(controls.worldX - THIRD_PASSAGE_CENTER) < 430;
     if (!ambush.resolved || decoyGuardsReleased || !isNearDecoys) return;
     setDecoyGuardsReleased(true);
-    setEnemies((current) => [...current, ...createDecoyGuards()
-      .filter((guard) => !current.some((enemy) => enemy.id === guard.id))]);
+    setEnemies((current) => [...current, ...createPassageMonsters()
+      .filter((monster) => !current.some((enemy) => enemy.id === monster.id))]);
   }, [ambush.resolved, controls.worldX, decoyGuardsReleased]);
 
   useEffect(() => {
@@ -220,6 +275,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
 
   useEffect(() => {
     if (scarePhase !== 'screamer') return;
+    setAchievementStats((stats) => stats.skeletonScreamerSeen
+      ? stats : { ...stats, skeletonScreamerSeen: true });
     const stopSound = playScreamerSound('beast');
     const timer = window.setTimeout(() => setScarePhase('defeat'), 750);
     return () => {
@@ -240,12 +297,16 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
 
   useEffect(() => {
     if (ambush.phase !== 'fake-death') return;
+    setAchievementStats((stats) => stats.skeletonScreamerSeen
+      ? stats : { ...stats, skeletonScreamerSeen: true });
     const stopSound = playScreamerSound('beast');
     return stopSound;
   }, [ambush.phase]);
 
   useEffect(() => {
     if (fifthQuest.state !== 'chest-scare') return;
+    setAchievementStats((stats) => stats.chestScreamerSeen
+      ? stats : { ...stats, chestScreamerSeen: true });
     const stopSound = playScreamerSound('mimic');
     const timer = window.setTimeout(fifthQuest.finishChestScare, 1080);
     return () => {
@@ -268,13 +329,14 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
 
   useEffect(() => {
     const timer = window.setInterval(() => {
+      if (hidingWardrobeId !== null) return;
       const position = positionRef.current;
       const trapHit = traps.some((trap) => trap.room <= unlockedRoom
         && Math.hypot(trap.x - position.x, (trap.y - position.y) * 9) < 70);
-      if (trapHit) player.takeDamage(10);
+      if (trapHit) takeDamageUnlessHidden(10);
     }, 900);
     return () => window.clearInterval(timer);
-  }, [player.takeDamage, traps, unlockedRoom]);
+  }, [hidingWardrobeId, takeDamageUnlessHidden, traps, unlockedRoom]);
 
   useEffect(() => {
     const key = keys.find((drop) => drop.room === unlockedRoom);
@@ -296,6 +358,13 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
     return () => window.removeEventListener('mousedown', down);
   }, [controls.attack]);
 
+  const completeBranch = useCallback(() => setCompleted(true), []);
+  if (branchRoute) {
+    return <BranchRoute route={branchRoute} initialDistance={branchDistance} completed={completed}
+      onComplete={completeBranch} onProgress={setBranchDistance}
+      onRestart={onRestart} onExitMenu={onExitMenu} />;
+  }
+
   const currentRoom = Math.min(FINAL_ROOM + 1, Math.floor(controls.worldX / ROOM_WIDTH) + 1);
   const torchRoom = currentRoom <= 2 ? currentRoom - 1 : null;
   const torchLeftX = torchRoom === null ? 0 : torchRoom * ROOM_WIDTH + 125 - controls.cameraX;
@@ -314,6 +383,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
         {ambush.ambushers.map((monster) => <AmbushMonster key={monster.id} monster={monster} bossMode={bossMode} />)}
         <FifthHallQuest state={fifthQuest.state} monster={fifthQuest.monster} />
         {traps.map((trap) => <CastleTrap key={trap.id} x={trap.x} y={trap.y} />)}
+        {WARDROBES.map((wardrobe) => <Wardrobe key={wardrobe.id} {...wardrobe}
+          occupied={hidingWardrobeId === wardrobe.id} />)}
         {arrows.map((arrow) => <ArrowShot key={arrow.id} arrow={arrow} />)}
         {enemyArrows.map((arrow) => <ArrowShot key={arrow.id} arrow={arrow} />)}
         {keys.map((key) => <KeyDrop key={key.room} x={key.x} y={key.y} />)}
@@ -331,13 +402,16 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
         autoAimActive={abilities.autoAimActive} healingActive={abilities.healingActive} owlSightActive={abilities.owlSightActive}
         hermesActive={abilities.hermesActive} canHeal={player.health > 0 && player.health < 100}
         onPrimary={abilities.activatePrimary} onHeal={abilities.activateHeal} onUtility={abilities.activateUtility} />
-      <div className={player.isImmune ? 'player-immune' : ''}>
+      <div className={`${player.isImmune ? 'player-immune' : ''} ${hidingWardrobeId !== null ? 'player-hidden' : ''}`}>
         <Knight weapon={weapon} screenX={controls.screenX} y={controls.y} facing={controls.facing}
           direction={controls.direction}
           health={player.health} isMoving={controls.isMoving} isRunning={controls.isMoving && abilities.hermesActive}
           isAttacking={controls.isAttacking} isBlocking={player.isImmune && !controls.isMoving}
           isVictorious={completed} attackSequence={controls.attackSequence} />
       </div>
+      {(nearbyWardrobe || hidingWardrobeId !== null) && <button className="wardrobe-action" onClick={toggleWardrobe}>
+        <b>E</b> {hidingWardrobeId === null ? 'СПРЯТАТЬСЯ' : 'ВЫЙТИ ИЗ ШКАФА'}
+      </button>}
       <div className="game-tip"><b>Q</b> сменить оружие · <b>M1</b> атаковать</div>
       {ambush.phase === 'hunting' && <div className="ambush-warning">ЗАСАДА · ОНИ ИДУТ С ДВУХ СТОРОН</div>}
       {ambush.phase === 'fake-death' && <FakeDeathOverlay weapon={weapon} />}
@@ -346,6 +420,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       {fifthQuest.state === 'chest-scare' && <ChestMimicScreamer weapon={weapon}
         originX={FIFTH_HALL_CHEST.x - controls.cameraX} originY={FIFTH_HALL_CHEST.y} />}
       <QuestNoteOverlay open={fifthQuest.noteOpen} />
+      {unlockedRoom > FORK_ROOM_INDEX && controls.worldX >= FORK_POSITION - 160
+        && <CastleFork onChoose={setBranchRoute} />}
       {scarePhase === 'defeat' && <GameResult title="suiuiiuuiuiuiuiuiuiu" subtitle="ТЫ УМЕР"
         bloody onRestart={onRestart} onExitMenu={onExitMenu} />}
       {completionVisible && <GameResult title="ЗАМОК ПРОЙДЕН" subtitle="Ты достиг Круга судьбы"

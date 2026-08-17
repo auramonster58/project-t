@@ -4,6 +4,8 @@ export const ROOM_COUNT = 10;
 export const FINAL_ROOM = ROOM_COUNT - 1;
 export const ROOM_WIDTH = 2200;
 export const WORLD_WIDTH = ROOM_COUNT * ROOM_WIDTH;
+export const FORK_ROOM_INDEX = 5;
+export const FORK_POSITION = (FORK_ROOM_INDEX + 1) * ROOM_WIDTH - 105;
 export const PORTAL_POSITION = { x: FINAL_ROOM * ROOM_WIDTH + 1350, y: 56 };
 export const PLAY_MIN_Y = 28;
 export const PLAY_MAX_Y = 72;
@@ -23,14 +25,20 @@ const Y_POSITIONS = [46, 55, 50, 53, 47, 56];
 const ARCHER_X_POSITIONS = [1260, 1390, 1510];
 
 export type TrapData = { id: number; room: number; x: number; y: number };
+export type WardrobeData = { id: number; room: number; x: number; y: number };
 
-export function createDecoyGuards(): EnemyData[] {
+export const WARDROBES: WardrobeData[] = Array.from({ length: ROOM_COUNT }, (_, room) => ({
+  id: room,
+  room,
+  x: room * ROOM_WIDTH + (room % 2 === 0 ? 420 : 1680),
+  y: 38,
+}));
+
+export function createPassageMonsters(): EnemyData[] {
   return [
-    { id: 9101, x: THIRD_PASSAGE_CENTER - 48, y: 46, patrolDirection: 1 as const },
-    { id: 9102, x: THIRD_PASSAGE_CENTER - 16, y: 50, patrolDirection: 1 as const },
-    { id: 9103, x: THIRD_PASSAGE_CENTER + 16, y: 54, patrolDirection: -1 as const },
-    { id: 9104, x: THIRD_PASSAGE_CENTER + 48, y: 57, patrolDirection: -1 as const },
-  ].map((guard) => ({ ...guard, room: 2, health: 100, kind: 'guard' as const }));
+    { id: 9101, x: THIRD_PASSAGE_CENTER - 205, y: 48, patrolDirection: 1 as const },
+    { id: 9102, x: THIRD_PASSAGE_CENTER + 205, y: 54, patrolDirection: -1 as const },
+  ].map((monster) => ({ ...monster, room: 2, health: 100, kind: 'monster' as const }));
 }
 
 export function isInTorchLight(enemy: EnemyData) {

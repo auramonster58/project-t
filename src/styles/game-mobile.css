@@ -1,0 +1,141 @@
+@media (pointer: coarse), (max-width: 700px) {
+  .game-page { -webkit-touch-callout: none; }
+
+  .game-hud {
+    top: max(8px, env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+  }
+
+  .hud-pixel-portrait,
+  .hero-status strong { display: none; }
+
+  .health {
+    width: clamp(110px, 32vw, 180px);
+    height: 14px;
+  }
+
+  .back-button { width: 44px; height: 44px; }
+
+  .room-counter {
+    top: max(8px, env(safe-area-inset-top));
+    right: max(8px, env(safe-area-inset-right));
+    min-height: 40px;
+  }
+
+  .exit-menu-button {
+    top: calc(max(8px, env(safe-area-inset-top)) + 48px);
+    right: max(8px, env(safe-area-inset-right));
+    min-height: 38px;
+  }
+
+  .enemy-status {
+    top: max(62px, calc(env(safe-area-inset-top) + 54px));
+  }
+
+  .enemy-status strong { margin-bottom: 3px; font-size: 9px; }
+
+  .enemy-health {
+    width: min(42vw, 190px);
+    height: 9px;
+  }
+
+  .touch-controls {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left));
+    align-items: flex-end;
+  }
+
+  .touch-controls .move-pad {
+    width: 140px;
+    height: 126px;
+  }
+
+  .touch-controls button {
+    width: 60px;
+    height: 60px;
+    border-width: 2px;
+    background: #11151aed;
+    font-size: 25px;
+  }
+
+  .move-pad button:first-child { left: 40px; }
+  .move-pad button:nth-child(2) { top: 46px; }
+  .move-pad button:nth-child(3) { top: 46px; }
+  .move-pad button:last-child { top: 66px; left: 40px; }
+
+  .touch-controls .attack-button {
+    width: 74px;
+    height: 74px;
+    border-color: #cf766b;
+    background: #64282bed;
+    font-size: 30px;
+  }
+
+  .touch-controls button:active,
+  .ability-button:active,
+  .weapon-switch:active { filter: brightness(1.5); transform: scale(.94); }
+
+  .ability-bar {
+    bottom: calc(max(12px, env(safe-area-inset-bottom)) + 142px);
+    gap: 5px;
+  }
+
+  .ability-button {
+    width: 64px;
+    min-height: 58px;
+    padding: 6px 3px 4px;
+  }
+
+  .ability-hotkey { display: none; }
+
+  .ability-icon { font-size: 22px; }
+
+  .ability-label { font-size: 8px; }
+
+  .weapon-switch {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: calc(max(12px, env(safe-area-inset-bottom)) + 84px);
+    min-height: 46px;
+    padding: 8px 10px;
+  }
+
+  .weapon-switch b { display: none; }
+
+  .weapon-switch span { font-size: 9px; }
+
+  .game-result button,
+  .newspaper-actions button,
+  .game-menu-panel button,
+  .registration-toggle,
+  .google-auth-button {
+    min-height: 44px;
+  }
+}
+
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 520px) {
+  .ability-bar {
+    bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .ability-button {
+    width: 58px;
+    min-height: 52px;
+  }
+
+  .ability-label { display: none; }
+
+  .touch-controls .move-pad {
+    scale: .86;
+    transform-origin: left bottom;
+  }
+
+  .weapon-switch {
+    bottom: calc(max(10px, env(safe-area-inset-bottom)) + 78px);
+  }
+
+  .game-menu-panel {
+    width: min(58vw, 450px);
+    padding: 12px 18px;
+  }
+}

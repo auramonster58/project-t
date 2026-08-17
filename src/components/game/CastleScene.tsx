@@ -1,5 +1,6 @@
 import { ROOM_COUNT, ROOM_WIDTH } from '../../lib/gameData';
 import { CastlePassage } from './CastlePassage';
+import { RoomDecor } from './RoomDecor';
 import { UpperChamber } from './UpperChamber';
 
 type CastleSceneProps = { unlockedRoom: number; ambushResolved: boolean; decoyGuardsReleased: boolean };
@@ -13,6 +14,7 @@ export function CastleScene({ unlockedRoom, ambushResolved, decoyGuardsReleased 
       {Array.from({ length: ROOM_COUNT }, (_, room) => (
         <div className={`castle-room castle-room--${room + 1}`} style={{ left: room * ROOM_WIDTH, width: ROOM_WIDTH }} key={room}>
           <span className="room-title">{room === ROOM_COUNT - 1 ? 'КРУГ СУДЬБЫ' : `ЗАЛ ${room + 1}`}</span>
+          <RoomDecor room={room} />
           <i className="room-pillar pillar-a" /><i className="room-pillar pillar-b" />
           <i className="torch-wall torch-wall--top" /><i className="torch-wall torch-wall--bottom" />
           <i className="room-torch torch-a" /><i className="room-torch torch-b" />

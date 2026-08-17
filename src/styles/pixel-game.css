@@ -33,6 +33,8 @@
 .gate-guard--guard .pixel-sprite { filter: grayscale(.25) brightness(.78); }
 .gate-guard--archer { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
 .gate-guard--archer .pixel-sprite { filter: brightness(.82) sepia(.15); }
+.gate-guard--monster { width: 118px; height: 172px; }
+.gate-guard--monster .pixel-sprite { filter: brightness(.9) sepia(.18); }
 .gate-guard--damage { animation: custom-enemy-hit 390ms steps(5); }
 .gate-guard--guard.gate-guard--walk { animation: custom-enemy-walk 520ms steps(4) infinite; }
 .gate-guard--archer.gate-guard--walk { animation: custom-archer-walk 480ms steps(4) infinite; }
@@ -63,7 +65,6 @@
 .hud-pixel-portrait { position: relative; display: block; width: 62px; height: 62px; overflow: hidden; border: 2px solid #8b8377; background: #050403; box-shadow: 3px 3px 0 #000; }
 .hud-pixel-portrait .pixel-sprite { scale: 1.5; transform-origin: 50% 23%; }
 .abandoned-armor { position: relative; overflow: hidden; background: transparent; border: 0; box-shadow: none; }
-.abandoned-armor .pixel-sprite { filter: grayscale(.65) brightness(.7); }
 .game-hud, .enemy-status, .room-counter, .game-tip, .ability-bar, .weapon-switch { filter: drop-shadow(4px 4px 0 #000); }
 .game-menu-screen { background: repeating-linear-gradient(0deg, transparent 0 7px, #1a130a 7px 8px), radial-gradient(circle, #211407, #030302 64%); }
 .game-menu-panel, .registration-form, .game-result button, .ability-button, .weapon-switch { border-radius: 0; box-shadow: 5px 5px 0 #000; backdrop-filter: none; }

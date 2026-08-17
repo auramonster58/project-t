@@ -41,15 +41,15 @@ export function useEnemyGuards(
       const player = playerPosition.current;
       setEnemies((current) => current.map((enemy) => {
         const distance = combatDistance(player.x, player.y, enemy);
-        const chaseRange = enemy.id >= 9101 && enemy.id <= 9104 ? 195 : CHASE_RANGE;
-        if (enemy.kind !== 'guard' || enemy.health === 0 || enemy.room > unlockedRoom
+        const chaseRange = enemy.kind === 'monster' ? 195 : CHASE_RANGE;
+        if (enemy.kind === 'archer' || enemy.health === 0 || enemy.room > unlockedRoom
           || Math.floor(player.x / ROOM_WIDTH) !== enemy.room
           || distance > chaseRange || distance < ATTACK_RANGE - 10) return enemy;
         const xStep = Math.sign(player.x - enemy.x) * 5;
         const yStep = Math.sign(player.y - enemy.y) * 0.55;
         const roomStart = enemy.room * ROOM_WIDTH + 90;
         const roomEnd = (enemy.room + 1) * ROOM_WIDTH - 90;
-        const avoidsDecoyMonsters = avoidDecoys && enemy.room === 2 && enemy.id < 9101;
+        const avoidsDecoyMonsters = avoidDecoys && enemy.room === 2 && enemy.kind === 'guard';
         const chaseX = avoidsDecoyMonsters
           ? Math.min(THIRD_PASSAGE_CENTER - 470, enemy.x + xStep)
           : enemy.x + xStep;
@@ -72,9 +72,9 @@ export function useEnemyGuards(
     const timer = window.setInterval(() => {
       const player = playerPosition.current;
       enemiesRef.current.forEach((enemy) => {
-        const isRepelled = avoidDecoys && enemy.room === 2 && enemy.id < 9101
+        const isRepelled = avoidDecoys && enemy.room === 2 && enemy.kind === 'guard'
           && enemy.x >= THIRD_PASSAGE_CENTER - 500;
-        if (enemy.kind !== 'guard' || enemy.health === 0 || enemy.room > unlockedRoom || isRepelled
+        if (enemy.kind === 'archer' || enemy.health === 0 || enemy.room > unlockedRoom || isRepelled
           || Math.floor(player.x / ROOM_WIDTH) !== enemy.room
           || combatDistance(player.x, player.y, enemy) > ATTACK_RANGE || lockedAttacks.current.has(enemy.id)) return;
         lockedAttacks.current.add(enemy.id);

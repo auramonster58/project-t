@@ -1,4 +1,4 @@
-import { horrorMonsterSheet, swordKnightSheet } from '../../lib/spriteData';
+import { horrorMonsterSheet } from '../../lib/spriteData';
 import { PixelSprite } from './PixelSprite';
 
 export function PassageAftermath({ guardsReleased }: { guardsReleased: boolean }) {
@@ -6,7 +6,7 @@ export function PassageAftermath({ guardsReleased }: { guardsReleased: boolean }
     <div className="passage-aftermath">
       <DecoyMonster side="left" guardsReleased={guardsReleased} />
       <div className="abandoned-armor">
-        <PixelSprite animation="dead" sheet={swordKnightSheet} />
+        <img src="/assets/return-armor.png" alt="" />
       </div>
       <DecoyMonster side="right" guardsReleased={guardsReleased} />
     </div>

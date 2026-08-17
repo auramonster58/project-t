@@ -1,5 +1,6 @@
 import { useRef } from 'react';
-import { archerSheet, swordKnightSheet, type SpriteAnimationName } from '../../lib/spriteData';
+import { archerSheet, horrorMonsterSheet, swordsmanGuardSheet,
+  type SpriteAnimationName, type SpriteSheet } from '../../lib/spriteData';
 import { PixelSprite } from './PixelSprite';
 
 export type GuardAttackPhase = 'idle' | 'windup' | 'strike' | 'hit';
@@ -9,7 +10,7 @@ export type EnemyData = {
   x: number;
   y: number;
   health: number;
-  kind: 'guard' | 'archer';
+  kind: 'guard' | 'archer' | 'monster';
   patrolDirection: 1 | -1;
 };
 
@@ -30,12 +31,13 @@ export function Enemy(props: EnemyProps) {
   if (enemy.health > 0) lastLivingFacing.current = facing;
   const displayedFacing = enemy.health === 0 ? lastLivingFacing.current : facing;
   const isHidden = !isInLight && !isRevealed && !isHit;
-  const isSummonedGuard = enemy.id >= 9101 && enemy.id <= 9104;
+  const isPassageMonster = enemy.kind === 'monster';
   const animation = selectEnemyAnimation(enemy, attackPhase, isShooting, isHit);
+  const sheet = selectEnemySheet(enemy.kind);
   const classes = [
     'gate-guard', `gate-guard--${enemy.kind}`, `gate-guard--${animation}`,
-    isSummonedGuard ? 'gate-guard--summoned' : '', isRevealed ? 'gate-guard--revealed' : '',
-    isHit ? 'gate-guard--hit' : '', isHidden && !isSummonedGuard ? 'gate-guard--hidden' : '',
+    isPassageMonster ? 'gate-guard--passage-monster' : '', isRevealed ? 'gate-guard--revealed' : '',
+    isHit ? 'gate-guard--hit' : '', isHidden && !isPassageMonster ? 'gate-guard--hidden' : '',
     enemy.health === 0 ? 'gate-guard--defeated' : '',
   ].filter(Boolean).join(' ');
 
@@ -46,13 +48,19 @@ export function Enemy(props: EnemyProps) {
       {(isTargeted || isRevealed || isHit) && enemy.health > 0
         && <span className="local-enemy-health"><i style={{ width: `${enemy.health}%` }} /></span>}
       <PixelSprite animation={animation}
-        direction={enemy.kind === 'guard' ? (displayedFacing < 0 ? 'left' : 'right') : undefined}
+        direction={enemy.kind !== 'archer' ? (displayedFacing < 0 ? 'left' : 'right') : undefined}
         frameOverride={enemy.kind === 'archer' && animation === 'idle' ? 1 : undefined}
-        sheet={enemy.kind === 'archer' ? archerSheet : swordKnightSheet} />
+        sheet={sheet} />
       {(attackPhase === 'windup' || attackPhase === 'hit')
         && <span className="guard-attack-effect">{attackPhase === 'windup' ? '!' : '−12'}</span>}
     </div>
   );
+}
+
+function selectEnemySheet(kind: EnemyData['kind']): SpriteSheet {
+  if (kind === 'archer') return archerSheet;
+  if (kind === 'monster') return horrorMonsterSheet;
+  return swordsmanGuardSheet;
 }
 
 function selectEnemyAnimation(enemy: EnemyData, phase: GuardAttackPhase,
