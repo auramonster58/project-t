@@ -221,7 +221,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   useEffect(() => {
     if (scarePhase !== 'screamer') return;
     const stopSound = playScreamerSound('beast');
-    const timer = window.setTimeout(() => setScarePhase('defeat'), 1350);
+    const timer = window.setTimeout(() => setScarePhase('defeat'), 750);
     return () => {
       window.clearTimeout(timer);
       stopSound();
@@ -247,7 +247,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   useEffect(() => {
     if (fifthQuest.state !== 'chest-scare') return;
     const stopSound = playScreamerSound('mimic');
-    const timer = window.setTimeout(fifthQuest.finishChestScare, 3000);
+    const timer = window.setTimeout(fifthQuest.finishChestScare, 1080);
     return () => {
       window.clearTimeout(timer);
       stopSound();
@@ -346,8 +346,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       {fifthQuest.state === 'chest-scare' && <ChestMimicScreamer weapon={weapon}
         originX={FIFTH_HALL_CHEST.x - controls.cameraX} originY={FIFTH_HALL_CHEST.y} />}
       <QuestNoteOverlay open={fifthQuest.noteOpen} />
-      {scarePhase === 'defeat' && <GameResult title="ТЕБЯ НАПУГАЛИ" subtitle="Верхняя комната оказалась ловушкой"
-        onRestart={onRestart} onExitMenu={onExitMenu} />}
+      {scarePhase === 'defeat' && <GameResult title="suiuiiuuiuiuiuiuiuiu" subtitle="ТЫ УМЕР"
+        bloody onRestart={onRestart} onExitMenu={onExitMenu} />}
       {completionVisible && <GameResult title="ЗАМОК ПРОЙДЕН" subtitle="Ты достиг Круга судьбы"
         onRestart={onRestart} onExitMenu={onExitMenu} />}
       {playerDefeatVisible && <GameResult title="РЫЦАРЬ ПОВЕРЖЕН" subtitle="Попробуй пройти замок ещё раз"

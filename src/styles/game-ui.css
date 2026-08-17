@@ -142,6 +142,12 @@
 .game-result { position: absolute; inset: 0; z-index: 150; justify-content: center; background: radial-gradient(circle, #4a303fef, #08090bf7 60%); }
 .game-result strong { font: clamp(34px, 7vw, 78px) Georgia, serif; color: #e8dcef; text-shadow: 0 0 25px #ab76c2; }.game-result span { color: #c6b9cb; letter-spacing: .12em; }
 .game-result > div { display: flex; gap: 10px; margin-top: 12px; }
+.game-result--bloody { overflow: hidden; background: radial-gradient(circle, #680000 0, #1e0000 45%, #020000 82%); animation: blood-result-in 360ms steps(4) both; }
+.game-result--bloody::before { content: ''; position: absolute; inset: -8%; z-index: 0; background: radial-gradient(circle at 9% 18%, #b80000 0 2%, transparent 2.5%), radial-gradient(circle at 86% 24%, #8f0000 0 4%, transparent 4.6%), radial-gradient(ellipse at 28% 72%, #a90000 0 7%, transparent 7.8%), radial-gradient(circle at 72% 83%, #c00 0 3%, transparent 3.6%); filter: blur(1px) drop-shadow(0 0 12px #f0000066); animation: blood-splatter 480ms cubic-bezier(.1,.8,.2,1) both; }
+.game-result--bloody::after { content: ''; position: absolute; inset: 0 0 auto; z-index: 0; height: 34%; background: repeating-linear-gradient(90deg, #720000 0 4%, #b00000 4% 7%, transparent 7% 12%); clip-path: polygon(0 0,100% 0,100% 38%,94% 24%,90% 72%,84% 32%,78% 88%,71% 26%,65% 61%,57% 35%,50% 92%,43% 28%,36% 68%,27% 34%,20% 83%,13% 28%,7% 58%,0 31%); opacity: .82; animation: blood-drip 1.7s ease-out both; }
+.game-result--bloody > * { position: relative; z-index: 1; }
+.game-result--bloody strong { color: #ffdddd; font-size: clamp(28px, 6vw, 70px); overflow-wrap: anywhere; text-shadow: 0 0 8px #fff, 0 0 20px #f00, 4px 5px 0 #550000; }
+.game-result--bloody span { color: #ff5b4c; font-weight: 900; }
 
 .touch-controls { display: none; position: absolute; inset: auto max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); justify-content: space-between; z-index: 125; pointer-events: none; }
 .touch-controls div { display: flex; gap: 8px; }
@@ -163,6 +169,9 @@
 @keyframes monster-hunger { to { translate: -50% -79%; scale: calc(var(--monster-facing) * 1.04) 1.04; } }
 @keyframes warning-pulse { to { opacity: .6; box-shadow: 0 0 42px #ff391e66; } }
 @keyframes fake-death-close { 70% { filter: brightness(.55) blur(0); } 100% { filter: brightness(0) blur(6px); } }
+@keyframes blood-result-in { from { filter: brightness(3) saturate(2); } to { filter: none; } }
+@keyframes blood-splatter { from { scale: .08; opacity: 0; } 55% { opacity: 1; } to { scale: 1; } }
+@keyframes blood-drip { from { translate: 0 -75%; } to { translate: 0; } }
 @keyframes screamer-shock { 0%, 8% { background: #eee; filter: invert(1); } 10%, 24% { background: #740000; filter: none; } 26%, 33% { filter: invert(1) contrast(2); } 100% { background: #000; filter: none; } }
 @keyframes screamer-lunge { from { scale: .06; filter: blur(13px) contrast(2); rotate: -4deg; } 32% { scale: 1.02; filter: blur(0); rotate: 3deg; } 48% { scale: .94; rotate: -2deg; } to { scale: 1.85; filter: contrast(1.5) brightness(.55); rotate: 0deg; } }
 @keyframes screamer-screen-shake { 25% { translate: -13px 8px; } 50% { translate: 12px -9px; } 75% { translate: -7px -5px; } }

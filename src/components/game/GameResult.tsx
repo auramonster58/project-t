@@ -3,11 +3,12 @@ type GameResultProps = {
   subtitle: string;
   onRestart: () => void;
   onExitMenu: () => void;
+  bloody?: boolean;
 };
 
-export function GameResult({ title, subtitle, onRestart, onExitMenu }: GameResultProps) {
+export function GameResult({ title, subtitle, onRestart, onExitMenu, bloody = false }: GameResultProps) {
   return (
-    <div className="game-result">
+    <div className={`game-result ${bloody ? 'game-result--bloody' : ''}`}>
       <strong>{title}</strong>
       <span>{subtitle}</span>
       <div>

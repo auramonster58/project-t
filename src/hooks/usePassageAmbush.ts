@@ -56,7 +56,7 @@ export function usePassageAmbush(player: MutableRefObject<PlayerPosition>, bossM
         const deathTimer = window.setTimeout(() => {
           timers.current.delete(deathTimer);
           setRespawnRequested(true);
-        }, 1400);
+        }, 760);
         timers.current.add(deathTimer);
       }
     }, 80);
