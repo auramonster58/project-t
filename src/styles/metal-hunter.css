@@ -1,0 +1,24 @@
+.metal-hunter { position: absolute; z-index: 91; width: 150px; height: 190px; translate: -50% -88%; pointer-events: none; }
+.hunter-body { position: absolute; inset: 0; transform: scaleX(var(--hunter-facing)); filter: drop-shadow(0 10px 8px #000) drop-shadow(0 0 11px #b51f15); animation: hunter-rattle 180ms steps(2) infinite alternate; }
+.hunter-body img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; clip-path: polygon(18% 0, 82% 0, 96% 100%, 4% 100%); filter: contrast(1.25) brightness(.72); }
+.hunter-vision { position: absolute; left: 57px; top: 38px; z-index: -1; width: 620px; height: 230px; transform: scaleX(var(--hunter-facing)); transform-origin: 0 50%; clip-path: polygon(0 44%, 100% 0, 100% 100%, 0 56%); background: linear-gradient(90deg, #e13a152d, #ffca1820 70%, transparent); border-radius: 50%; }
+.metal-hunter small { position: absolute; left: 50%; top: -26px; translate: -50% 0; color: #d66d5f; font-size: 9px; letter-spacing: .15em; white-space: nowrap; }
+.hunter-warning { position: absolute; left: 50%; top: 24%; z-index: 140; translate: -50% 0; color: #ffb08e; font-size: clamp(13px, 3vw, 22px); letter-spacing: .18em; text-align: center; text-shadow: 0 0 12px #f00; animation: warning-pulse .45s infinite alternate; }
+.hunter-skill-check { position: absolute; inset: 0; z-index: 180; pointer-events: none; }
+.hunter-skill-check header { position: absolute; left: 50%; top: 7%; display: grid; translate: -50% 0; gap: 5px; text-align: center; text-shadow: 0 2px 6px #000; }
+.hunter-skill-check header strong { color: #e8d7c6; font-size: clamp(15px, 2.5vw, 24px); letter-spacing: .2em; white-space: nowrap; }
+.hunter-skill-check header span { color: #a89d91; font-size: 10px; letter-spacing: .1em; }
+.hunter-target-area { position: absolute; inset: 15% 7% 14%; }
+.hunter-target { position: absolute; display: grid; width: clamp(44px, 6vw, 70px); aspect-ratio: 1; translate: -50% -50%; place-items: center; border: 4px solid #35383b; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #889098, #32363b 45%, #0d0f11 74%); box-shadow: inset -8px -10px 15px #000b, 0 8px 14px #000b; transition: filter 100ms, scale 100ms; }
+.hunter-target--ready { border-color: #fff19a; background: radial-gradient(circle at 38% 32%, #fffbd1, #ffd823 38%, #a86a00 72%); box-shadow: inset -8px -10px 15px #9a4c00aa, 0 0 16px #fff4a8, 0 0 45px #ffc400aa; scale: 1.14; animation: target-ready 180ms ease-in-out infinite alternate; }
+.hunter-target b { position: absolute; top: -39px; color: #fff6aa; font: 900 33px Georgia, serif; text-shadow: 0 0 8px #fff, 0 0 17px #ffc400; }
+.hunter-skill-check footer { position: absolute; left: 50%; bottom: 6%; translate: -50% 0; color: #bdb1a5; font-size: clamp(10px, 1.8vw, 14px); letter-spacing: .08em; white-space: nowrap; text-shadow: 0 2px 5px #000; }
+.hunter-skill-check kbd, .hunter-tutorial kbd { display: inline-grid; min-width: 28px; min-height: 28px; place-items: center; border: 2px solid #c7b9a8; border-radius: 4px; background: #211c18; color: #fff5e8; font: inherit; font-size: 15px; font-weight: 800; box-shadow: 0 3px 0 #090807; }
+.hunter-skill-check--danger { animation: wardrobe-danger 170ms steps(2) 4; }
+.hunter-tutorial { position: absolute; left: 50%; top: 50%; z-index: 190; display: grid; width: min(88vw, 510px); translate: -50% -50%; gap: 12px; padding: 26px; border: 3px solid #82766a; background: #080706f5; box-shadow: 9px 9px 0 #000, 0 0 40px #000; text-align: center; }
+.hunter-tutorial small { color: #9d8d7e; letter-spacing: .15em; }.hunter-tutorial strong { color: #f0d5bd; font-size: 22px; letter-spacing: .17em; }
+.hunter-tutorial p { margin: 0; color: #c5b9ad; font-size: 13px; line-height: 1.55; }.hunter-tutorial p b { color: #ffe04b; }
+.hunter-tutorial button { min-height: 52px; border: 2px solid #a77b5f; background: #351b13; color: #f2d7bd; font-weight: 800; letter-spacing: .1em; }
+@keyframes hunter-rattle { to { translate: 4px -2px; rotate: 1deg; } }
+@keyframes target-ready { to { scale: 1.22; filter: brightness(1.18); } }
+@keyframes wardrobe-danger { 50% { filter: sepia(1) saturate(5) hue-rotate(320deg); } }

@@ -5,6 +5,7 @@ import { ArrowShot } from '../components/game/ArrowShot';
 import { BranchRoute } from '../components/game/BranchRoute';
 import { CastleFork } from '../components/game/CastleFork';
 import { CastleScene } from '../components/game/CastleScene';
+import { DialogueBox } from '../components/game/DialogueBox';
 import { ChestMimicScreamer } from '../components/game/ChestMimicScreamer';
 import { CastleTrap, ExitPortal, KeyDrop } from '../components/game/CastleProgress';
 import { Enemy } from '../components/game/Enemy';
@@ -13,10 +14,13 @@ import { FifthHallQuest, QuestNoteOverlay } from '../components/game/FifthHallQu
 import { GameHud } from '../components/game/GameHud';
 import { GameResult } from '../components/game/GameResult';
 import { HealthParticle } from '../components/game/HealthParticle';
+import { HunterSkillCheck } from '../components/game/HunterSkillCheck';
 import { Knight } from '../components/game/Knight';
+import { MetalHunter } from '../components/game/MetalHunter';
 import { QuestScreamer } from '../components/game/QuestScreamer';
 import { TouchControls } from '../components/game/TouchControls';
 import { Wardrobe } from '../components/game/Wardrobe';
+import { WardrobeView } from '../components/game/WardrobeView';
 import { WeaponSwitch } from '../components/game/WeaponSwitch';
 import { useKnightAbilities } from '../hooks/useKnightAbilities';
 import { useArrowShots } from '../hooks/useArrowShots';
@@ -26,6 +30,7 @@ import { useHealthParticles } from '../hooks/useHealthParticles';
 import { FIFTH_HALL_CHEST, useFifthHallQuest } from '../hooks/useFifthHallQuest';
 import { useGameViewScale } from '../hooks/useGameViewScale';
 import { useKnightControls } from '../hooks/useKnightControls';
+import { useMetalHunter } from '../hooks/useMetalHunter';
 import { usePassageAmbush, type AmbushStrike } from '../hooks/usePassageAmbush';
 import { usePlayerHealth } from '../hooks/usePlayerHealth';
 import { useWeaponSwitch } from '../hooks/useWeaponSwitch';
@@ -36,6 +41,7 @@ import { createEnemies, createPassageMonsters, createTraps, FINAL_ROOM, FORK_POS
 import { EMPTY_ACHIEVEMENT_STATS, loadGameSave, saveGame,
   type AchievementStats, type BranchRoute as BranchRouteName } from '../lib/gameSave';
 import { playScreamerSound } from '../lib/screamerSound';
+import { KING_DIALOGUE, KING_POSITION } from '../lib/kingDialogue';
 import '../styles/game-scene.css';
 import '../styles/game-ui.css';
 import '../styles/game-mobile.css';
@@ -44,6 +50,9 @@ import '../styles/wardrobe.css';
 import '../styles/room-decor.css';
 import '../styles/screamers.css';
 import '../styles/pixel-game.css';
+import '../styles/stone-walls.css';
+import '../styles/metal-hunter.css';
+import '../styles/dialogue.css';
 
 type DroppedKey = { room: number; x: number; y: number };
 
@@ -78,6 +87,9 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
     () => ({ ...EMPTY_ACHIEVEMENT_STATS }),
   );
   const [hidingWardrobeId, setHidingWardrobeId] = useState<number | null>(null);
+  const [dialogueOpen, setDialogueOpen] = useState(false);
+  const [kingDialogueStarted, setKingDialogueStarted] = useState(false);
+  const [princeQuestActive, setPrinceQuestActive] = useState(false);
   const droppedHealthEnemies = useRef(new Set<number>());
   const deathRecorded = useRef(false);
   const hidingWardrobeRef = useRef<number | null>(null);
@@ -173,14 +185,34 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   const passageBlockers = useMemo(() => enemies.filter((enemy) => enemy.kind === 'monster'), [enemies]);
   const controls = useKnightControls(strikeEnemy, maxWorldX, WORLD_WIDTH, ROOM_WIDTH, instantShot,
     bossMode ? 2 : 1, upperRoomUnlocked, passageBlockers,
-    player.health > 0 && !completed && branchRoute === null && hidingWardrobeId === null, viewScale);
+    player.health > 0 && !completed && branchRoute === null && hidingWardrobeId === null
+      && !dialogueOpen, viewScale);
   const positionRef = useRef({ x: controls.worldX, y: controls.y });
+  const hunterCaught = useCallback(() => player.takeDamage(100), [player.takeDamage]);
+  const metalHunter = useMetalHunter(positionRef,
+    Math.floor(controls.worldX / ROOM_WIDTH) >= 3 && branchRoute === null && player.health > 0,
+    hidingWardrobeId !== null, hunterCaught);
   const nearbyWardrobe = useMemo(() => WARDROBES.find((wardrobe) => wardrobe.room <= unlockedRoom
     && Math.hypot(wardrobe.x - controls.worldX, (wardrobe.y - controls.y) * 9) < 145),
   [controls.worldX, controls.y, unlockedRoom]);
+
+  useEffect(() => {
+    if (kingDialogueStarted || unlockedRoom < FINAL_ROOM) return;
+    const distance = Math.hypot(KING_POSITION.x - controls.worldX,
+      (KING_POSITION.y - controls.y) * 9);
+    if (distance > 280) return;
+    setKingDialogueStarted(true);
+    setDialogueOpen(true);
+  }, [controls.worldX, controls.y, kingDialogueStarted, unlockedRoom]);
+
+  const finishKingDialogue = useCallback(() => {
+    setDialogueOpen(false);
+    setPrinceQuestActive(true);
+  }, []);
   const toggleWardrobe = useCallback(() => {
+    if (metalHunter.skillCheck) return;
     setHidingWardrobeId((current) => current === null ? nearbyWardrobe?.id ?? null : null);
-  }, [nearbyWardrobe]);
+  }, [metalHunter.skillCheck, nearbyWardrobe]);
   const ambush = usePassageAmbush(positionRef, bossMode);
   const fifthQuest = useFifthHallQuest(positionRef, controls.teleport);
   fifthQuestRestoreRef.current = fifthQuest.restore;
@@ -384,6 +416,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
           isRevealed={weapon === 'sword' && abilities.owlSightActive} isHit={hitEnemies.has(enemy.id)}
           isInLight={combatDistance(controls.worldX, controls.y, enemy) <= 360 || isInTorchLight(enemy)} />)}
         {ambush.ambushers.map((monster) => <AmbushMonster key={monster.id} monster={monster} bossMode={bossMode} />)}
+        {metalHunter.phase === 'chase' && <MetalHunter {...metalHunter.position} facing={metalHunter.facing} />}
         <FifthHallQuest state={fifthQuest.state} monster={fifthQuest.monster} />
         {traps.map((trap) => <CastleTrap key={trap.id} x={trap.x} y={trap.y} />)}
         {WARDROBES.map((wardrobe) => <Wardrobe key={wardrobe.id} {...wardrobe}
@@ -412,11 +445,19 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
           isAttacking={controls.isAttacking} isBlocking={player.isImmune && !controls.isMoving}
           isVictorious={completed} attackSequence={controls.attackSequence} />
       </div>
-      {(nearbyWardrobe || hidingWardrobeId !== null) && <button className="wardrobe-action" onClick={toggleWardrobe}>
+      {hidingWardrobeId !== null && <WardrobeView hunterLooking={metalHunter.skillCheck?.hunterLooking ?? false} />}
+      {(nearbyWardrobe || hidingWardrobeId !== null) && !metalHunter.skillCheck && <button className="wardrobe-action" onClick={toggleWardrobe}>
         <b>E</b> {hidingWardrobeId === null ? 'СПРЯТАТЬСЯ' : 'ВЫЙТИ ИЗ ШКАФА'}
       </button>}
       <div className="game-tip"><b>Q</b> сменить оружие · <b>M1</b> атаковать</div>
+      {princeQuestActive && <aside className="quest-objective">
+        <strong>КВЕСТ: НАЙТИ ПРИНЦА</strong><span>Добраться до старой башни</span>
+      </aside>}
+      {dialogueOpen && <DialogueBox lines={KING_DIALOGUE} onFinish={finishKingDialogue} />}
       {ambush.phase === 'hunting' && <div className="ambush-warning">ЗАСАДА · ОНИ ИДУТ С ДВУХ СТОРОН</div>}
+      {metalHunter.phase === 'warning' && <div className="hunter-warning">СКРЕЖЕТ МЕТАЛЛА И КОСТЕЙ<br />ПОГОНЯ ЧЕРЕЗ 3 СЕКУНДЫ</div>}
+      {metalHunter.skillCheck && <HunterSkillCheck state={metalHunter.skillCheck}
+        onBegin={metalHunter.beginSkillCheck} />}
       {ambush.phase === 'fake-death' && <FakeDeathOverlay weapon={weapon} />}
       {scarePhase === 'screamer' && <FakeDeathOverlay weapon={weapon} />}
       {fifthQuest.state === 'scare' && <QuestScreamer />}

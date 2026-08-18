@@ -1,6 +1,7 @@
 import { ROOM_COUNT, ROOM_WIDTH } from '../../lib/gameData';
 import { CastlePassage } from './CastlePassage';
 import { RoomDecor } from './RoomDecor';
+import { StationaryKing } from './StationaryKing';
 import { UpperChamber } from './UpperChamber';
 
 type CastleSceneProps = { unlockedRoom: number; ambushResolved: boolean; decoyGuardsReleased: boolean };
@@ -20,6 +21,7 @@ export function CastleScene({ unlockedRoom, ambushResolved, decoyGuardsReleased 
           <i className="room-torch torch-a" /><i className="room-torch torch-b" />
           {room < 2 && <><i className="torch-light torch-light-a" /><i className="torch-light torch-light-b" /></>}
           {room === 2 && <UpperChamber isUnlocked={ambushResolved} />}
+          {room === ROOM_COUNT - 1 && <StationaryKing />}
           <CastlePassage room={room} showAftermath={ambushResolved} guardsReleased={decoyGuardsReleased} />
           {room > unlockedRoom && <span className="room-darkness" />}
         </div>

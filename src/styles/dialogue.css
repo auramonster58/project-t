@@ -1,0 +1,13 @@
+.dialogue-layer { position: absolute; inset: 0; z-index: 210; background: #0003; pointer-events: none; }
+.dialogue-box { position: absolute; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); display: flex; width: min(920px, calc(100vw - 32px)); min-height: 190px; translate: -50% 0; overflow: hidden; padding: 0; border: 3px solid #766247; background: linear-gradient(135deg, #090908f7, #15110df5); color: #ded5c7; text-align: left; box-shadow: 0 12px 45px #000, inset 0 0 35px #000; cursor: pointer; pointer-events: auto; }
+.dialogue-portrait { flex: 0 0 210px; min-height: 190px; background-image: var(--portrait-image); background-size: calc(var(--portrait-columns) * 100%) 200%; background-position: var(--portrait-x) var(--portrait-y); background-repeat: no-repeat; image-rendering: pixelated; mix-blend-mode: screen; filter: contrast(1.25); }
+.dialogue-copy { position: relative; flex: 1; padding: 28px 58px 25px 25px; }
+.dialogue-copy strong { color: #d9b867; font-size: 15px; letter-spacing: .2em; text-shadow: 0 0 10px #b88436; }
+.dialogue-copy p { min-height: 72px; margin: 15px 0 9px; font: 18px/1.5 Georgia, serif; text-transform: none; }
+.dialogue-copy small { color: #746b60; font-size: 8px; letter-spacing: .13em; }
+.dialogue-progress { position: absolute; top: 12px; right: 14px; color: #776b5a; font-size: 9px; }
+.dialogue-cursor { display: inline-block; width: 7px; height: 16px; margin-left: 4px; background: #d9b867; vertical-align: -2px; animation: dialogue-blink 550ms steps(1) infinite; }
+.quest-objective { position: absolute; right: 24px; top: 112px; z-index: 130; width: 230px; padding: 13px 15px; border: 1px solid #99783e; background: #0b0907e8; box-shadow: 4px 4px 0 #000; }
+.quest-objective strong, .quest-objective span { display: block; }.quest-objective strong { color: #e4c16d; font-size: 11px; letter-spacing: .12em; }.quest-objective span { margin-top: 7px; color: #b8aa95; font-size: 10px; }
+@keyframes dialogue-blink { 50% { opacity: 0; } }
+@media (max-width: 700px) { .dialogue-box { min-height: 145px; }.dialogue-portrait { flex-basis: 135px; min-height: 145px; }.dialogue-copy { padding: 18px 35px 16px 15px; }.dialogue-copy p { min-height: 58px; margin: 9px 0 5px; font-size: 14px; }.dialogue-copy small { font-size: 6px; }.quest-objective { top: 105px; right: 10px; width: 190px; } }

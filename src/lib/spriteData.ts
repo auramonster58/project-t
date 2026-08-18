@@ -70,6 +70,27 @@ export const restoredCrossbowKnightSheet: SpriteSheet = {
   src: '/assets/hero-crossbow-sheet-restored-transparent.png',
 };
 
+const combatCell = (column: number, rowIndex: number): SpriteFrame => ({
+  x: column * 384,
+  y: rowIndex * 256,
+  width: 384,
+  height: 256,
+});
+
+const combatRow = (rowIndex: number): SpriteFrame[] =>
+  [0, 1, 2, 3].map((column) => combatCell(column, rowIndex));
+
+export const swordKnightCombatSheet: SpriteSheet = {
+  src: '/assets/hero-combat-sheet-v2.png', width: 1536, height: 1024,
+  animations: {
+    walk: animation(combatRow(0), 150),
+    run: animation(combatRow(1), 95),
+    block: animation(combatRow(2), 125),
+    attack1: animation(combatRow(3), 82, false),
+    attack2: animation([...combatRow(3)].reverse(), 82, false),
+  },
+};
+
 export const swordsmanGuardSheet: SpriteSheet = {
   src: '/assets/swordsman-guard-sheet-transparent.png', width: 1024, height: 1536,
   animations: {
