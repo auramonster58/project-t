@@ -4,11 +4,12 @@
 .game-page button, .game-page a, .room-counter, .game-tip, .ambush-warning { border-radius: 0; font-family: inherit; text-transform: uppercase; }
 .pixel-sprite { position: absolute; inset: 0; display: block; background-color: transparent; background-repeat: no-repeat; image-rendering: pixelated; }
 
-.knight { width: clamp(112px, 10vw, 132px); height: clamp(160px, 16vw, 188px); transform: translate(-50%, -100%) scaleX(var(--model-facing, 1)); }
-.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: clamp(175px, 16vw, 220px); }
-.knight--sword.knight--walk, .knight--sword.knight--run, .knight--sword.knight--block { width: clamp(210px, 20vw, 270px); height: clamp(180px, 18vw, 225px); }
-.knight--sword.knight--attack1, .knight--sword.knight--attack2 { width: clamp(275px, 27vw, 350px); height: clamp(190px, 20vw, 245px); }
-.pixel-sprite--combat-v2 { filter: contrast(1.75) brightness(1.08); mix-blend-mode: screen; }
+.knight { width: clamp(125px, 11vw, 150px); height: clamp(175px, 17vw, 205px); transform: translate(-50%, -100%) scaleX(var(--model-facing, 1)); }
+.knight.knight--sword { width: clamp(210px, 19vw, 240px); height: clamp(210px, 19vw, 240px); }
+.knight.knight--crossbow { width: clamp(220px, 20vw, 250px); height: clamp(200px, 18vw, 230px); }
+.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: clamp(175px, 15vw, 210px); height: clamp(158px, 15vw, 185px); transform-origin: 50% 100%; }
+.knight--damage { width: clamp(112px, 10vw, 135px); height: clamp(158px, 15vw, 180px); }
+.knight--block { width: clamp(120px, 10.5vw, 142px); height: clamp(175px, 17vw, 202px); }
 .knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { transform: translate(-50%, -100%) scaleX(var(--facing)); }
 .knight--dead { width: clamp(165px, 15vw, 205px); height: clamp(100px, 9vw, 120px); }
 .knight--dead { transform: translate(-50%, -100%) scaleX(var(--facing)); animation: custom-player-death 820ms steps(8) forwards; }
@@ -26,7 +27,7 @@
 .knight--victory { animation: custom-victory 800ms steps(6) infinite alternate; }
 .knight--attack1 .attack-flash, .knight--attack2 .attack-flash { animation: flash 360ms steps(3) forwards; }
 .knight--crossbow .attack-flash { display: none; }
-.knight-shadow { height: 7px; border-radius: 0; filter: none; background: #000b; }
+.knight-shadow { left: 50%; width: clamp(76px, 7vw, 92px); height: 7px; translate: -50% 0; border-radius: 0; filter: none; background: #000b; }
 
 .stationary-king { position: absolute; left: 54%; top: 48%; width: 230px; height: 310px; z-index: 24; translate: -50% -50%; pointer-events: none; }
 .stationary-king img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; mix-blend-mode: screen; filter: contrast(1.35) saturate(1.08); }
@@ -104,9 +105,11 @@
 @keyframes pixel-mist { to { translate: 190px 0; } }
 
 @media (pointer: coarse), (max-width: 700px) {
-  .knight { width: 86px; height: 134px; }.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: 138px; }
-  .knight--sword.knight--walk, .knight--sword.knight--run, .knight--sword.knight--block { width: 190px; height: 168px; }
-  .knight--sword.knight--attack1, .knight--sword.knight--attack2 { width: 245px; height: 178px; }
+  .knight { width: 105px; height: 155px; }.knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: 145px; height: 142px; }
+  .knight.knight--sword { width: 168px; height: 168px; }
+  .knight.knight--crossbow { width: 178px; height: 164px; }
+  .knight--damage { width: 98px; height: 140px; }
+  .knight--block { width: 103px; height: 155px; }
   .gate-guard { width: 86px; height: 126px; }.gate-guard--attack1, .gate-guard--attack2 { width: 130px; }
   .stationary-king { width: 170px; height: 235px; }
 }

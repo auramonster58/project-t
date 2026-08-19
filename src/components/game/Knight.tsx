@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { restoredCrossbowKnightSheet, restoredSwordKnightSheet, swordKnightCombatSheet,
-  type MovementDirection,
+import { restoredCrossbowKnightSheet, restoredSwordKnightSheet, type MovementDirection,
   type SpriteAnimationName } from '../../lib/spriteData';
 import { PixelSprite } from './PixelSprite';
 
@@ -20,7 +19,7 @@ type KnightProps = {
 };
 
 export function Knight(props: KnightProps) {
-  const { weapon, screenX, y, facing, direction, health, isMoving, isRunning, isAttacking,
+  const { weapon, screenX, y, facing, health, isMoving, isRunning, isAttacking,
     isBlocking, isVictorious, attackSequence } = props;
   const previousHealth = useRef(health);
   const [isDamaged, setIsDamaged] = useState(false);
@@ -39,13 +38,8 @@ export function Knight(props: KnightProps) {
   const animation = selectAnimation({ weapon, health, isDamaged, isAttacking,
     attackSequence, isMoving, isRunning, isBlocking, isVictorious });
   const className = ['knight', `knight--${animation}`, `knight--${weapon}`].join(' ');
-  const usesNewCombatSprite = weapon === 'sword'
-    && ['walk', 'run', 'block', 'attack1', 'attack2'].includes(animation);
-  const sheet = usesNewCombatSprite ? swordKnightCombatSheet
-    : weapon === 'sword' ? restoredSwordKnightSheet : restoredCrossbowKnightSheet;
-  const isDirectionalPose = ['idle', 'walk', 'run'].includes(animation);
-  const spriteDirection = isDirectionalPose && direction === 'right' ? 'left' : direction;
-  const modelFacing = isDirectionalPose && direction === 'right' ? -1 : isDirectionalPose ? 1 : facing;
+  const sheet = weapon === 'sword' ? restoredSwordKnightSheet : restoredCrossbowKnightSheet;
+  const modelFacing = facing;
 
   return (
     <div className={className} style={{ left: screenX, top: `${y}%`, '--facing': facing,
@@ -53,8 +47,7 @@ export function Knight(props: KnightProps) {
       '--hit-shift': `${facing * -8}px`,
       zIndex: 101 } as React.CSSProperties}>
       <span className="attack-flash" />
-      <PixelSprite animation={animation} direction={spriteDirection} sheet={sheet}
-        animateMovement={usesNewCombatSprite} className={usesNewCombatSprite ? 'pixel-sprite--combat-v2' : ''} />
+      <PixelSprite animation={animation} sheet={sheet} animateFrames />
       <span className="knight-shadow" />
     </div>
   );

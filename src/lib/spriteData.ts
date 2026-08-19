@@ -59,35 +59,52 @@ export const crossbowKnightSheet: SpriteSheet = {
   },
 };
 
+const SQUARE_EDGES = [0, 314, 627, 941, 1254];
+const squareCell = (column: number, rowIndex: number): SpriteFrame => ({
+  x: SQUARE_EDGES[column],
+  y: SQUARE_EDGES[rowIndex],
+  width: SQUARE_EDGES[column + 1] - SQUARE_EDGES[column],
+  height: SQUARE_EDGES[rowIndex + 1] - SQUARE_EDGES[rowIndex],
+});
+const squareRow = (rowIndex: number): SpriteFrame[] =>
+  [0, 1, 2, 3].map((column) => squareCell(column, rowIndex));
+const CROSSBOW_X = [0, 328, 656, 984, 1312];
+const CROSSBOW_Y = [0, 300, 600, 900, 1199];
+const crossbowCell = (column: number, rowIndex: number): SpriteFrame => ({
+  x: CROSSBOW_X[column], y: CROSSBOW_Y[rowIndex],
+  width: CROSSBOW_X[column + 1] - CROSSBOW_X[column],
+  height: CROSSBOW_Y[rowIndex + 1] - CROSSBOW_Y[rowIndex],
+});
+const crossbowRow = (rowIndex: number): SpriteFrame[] =>
+  [0, 1, 2, 3].map((column) => crossbowCell(column, rowIndex));
+
 export const restoredSwordKnightSheet: SpriteSheet = {
-  ...swordKnightSheet,
-  src: '/assets/hero-sword-sheet-walk-fixed-transparent.png',
-  height: 1537,
+  src: '/assets/hero-unified-32bit-sheet-transparent.png', width: 1254, height: 1254,
+  animations: {
+    idle: animation(squareRow(0), 260),
+    walk: animation(squareRow(1), 145),
+    run: animation(squareRow(1), 90),
+    attack1: animation(squareRow(2), 88, false),
+    attack2: animation([...squareRow(2)].reverse(), 88, false),
+    block: animation([squareCell(0, 3)], 180),
+    damage: animation([squareCell(1, 3)], 180, false),
+    victory: animation([squareCell(2, 3)], 300),
+    dead: animation([squareCell(3, 3)], 300, false),
+  },
 };
 
 export const restoredCrossbowKnightSheet: SpriteSheet = {
-  ...crossbowKnightSheet,
-  src: '/assets/hero-crossbow-sheet-restored-transparent.png',
-};
-
-const combatCell = (column: number, rowIndex: number): SpriteFrame => ({
-  x: column * 384,
-  y: rowIndex * 256,
-  width: 384,
-  height: 256,
-});
-
-const combatRow = (rowIndex: number): SpriteFrame[] =>
-  [0, 1, 2, 3].map((column) => combatCell(column, rowIndex));
-
-export const swordKnightCombatSheet: SpriteSheet = {
-  src: '/assets/hero-combat-sheet-v2.png', width: 1536, height: 1024,
+  src: '/assets/hero-crossbow-unified-32bit-sheet-transparent.png', width: 1312, height: 1199,
   animations: {
-    walk: animation(combatRow(0), 150),
-    run: animation(combatRow(1), 95),
-    block: animation(combatRow(2), 125),
-    attack1: animation(combatRow(3), 82, false),
-    attack2: animation([...combatRow(3)].reverse(), 82, false),
+    idle: animation(crossbowRow(0), 260),
+    walk: animation(crossbowRow(1), 145),
+    run: animation(crossbowRow(1), 90),
+    attack1: animation(crossbowRow(2), 88, false),
+    attack2: animation([...crossbowRow(2)].reverse(), 88, false),
+    block: animation([crossbowCell(0, 3)], 180),
+    damage: animation([crossbowCell(1, 3)], 180, false),
+    victory: animation([crossbowCell(2, 3)], 300),
+    dead: animation([crossbowCell(3, 3)], 300, false),
   },
 };
 

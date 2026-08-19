@@ -5,30 +5,32 @@ import type { MovementDirection } from '../lib/spriteData';
 const BRANCH_LENGTH = 500;
 const EDGE = 20;
 
-export function useBranchControls(route: BranchRoute, initialDistance?: number) {
+export function useBranchControls(route: BranchRoute, initialDistance?: number, canControl = true) {
   const start = initialDistance ?? (route === 'up' ? BRANCH_LENGTH - EDGE : EDGE);
   const [distance, setDistance] = useState(start);
   const [lane, setLane] = useState(50);
-  const [direction, setDirection] = useState<MovementDirection>(route);
+  const [direction, setDirection] = useState<MovementDirection>(route === 'up' ? 'up' : 'down');
   const [isMoving, setIsMoving] = useState(false);
   const [isAttacking, setIsAttacking] = useState(false);
   const [attackSequence, setAttackSequence] = useState(0);
   const keys = useRef(new Set<string>());
 
   const move = useCallback((x: -1 | 0 | 1, y: -1 | 0 | 1) => {
+    if (!canControl) return;
     setIsMoving(Boolean(x || y));
     if (x) setLane((value) => Math.min(80, Math.max(20, value + x * 3)));
     if (y) {
       setDistance((value) => Math.min(BRANCH_LENGTH - EDGE, Math.max(EDGE, value + y * 4)));
       setDirection(y < 0 ? 'up' : 'down');
     } else if (x) setDirection(x < 0 ? 'left' : 'right');
-  }, []);
+  }, [canControl]);
 
   const attack = useCallback(() => {
+    if (!canControl) return;
     setAttackSequence((value) => value + 1);
     setIsAttacking(true);
     window.setTimeout(() => setIsAttacking(false), 360);
-  }, []);
+  }, [canControl]);
 
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
@@ -51,6 +53,7 @@ export function useBranchControls(route: BranchRoute, initialDistance?: number) 
 
   useEffect(() => {
     const timer = window.setInterval(() => {
+      if (!canControl) { keys.current.clear(); setIsMoving(false); return; }
       const left = keys.current.has('KeyA') || keys.current.has('ArrowLeft');
       const right = keys.current.has('KeyD') || keys.current.has('ArrowRight');
       const up = keys.current.has('KeyW') || keys.current.has('ArrowUp');
@@ -61,7 +64,7 @@ export function useBranchControls(route: BranchRoute, initialDistance?: number) 
       if (x || y) move(x, y);
     }, 70);
     return () => window.clearInterval(timer);
-  }, [move]);
+  }, [canControl, move]);
 
   const completed = route === 'up' ? distance <= EDGE : distance >= BRANCH_LENGTH - EDGE;
   const room = Math.min(5, Math.floor((route === 'up' ? BRANCH_LENGTH - distance : distance) / 100) + 1);

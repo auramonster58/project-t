@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 
 export type SavedEnemy = { id: number; health: number };
 export type SavedKey = { room: number; x: number; y: number };
-export type BranchRoute = 'up' | 'down';
+export type BranchRoute = 'up' | 'middle' | 'down';
 export type AchievementStats = {
   totalKills: number;
   chestScreamerSeen: boolean;

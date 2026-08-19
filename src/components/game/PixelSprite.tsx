@@ -7,7 +7,7 @@ type PixelSpriteProps = {
   direction?: MovementDirection;
   frameOverride?: number;
   sheet: SpriteSheet;
-  animateMovement?: boolean;
+  animateFrames?: boolean;
 };
 
 // На карточках порядок ракурсов такой: вниз, влево, вверх, вправо.
@@ -15,13 +15,13 @@ const DIRECTION_FRAME: Record<MovementDirection, number> = { down: 0, left: 1, u
 const DIRECTIONAL_ANIMATIONS: SpriteAnimationName[] = ['idle', 'walk', 'run'];
 
 export function PixelSprite({ animation, className = '', direction, frameOverride, sheet,
-  animateMovement = false }: PixelSpriteProps) {
+  animateFrames = false }: PixelSpriteProps) {
   const selected = sheet.animations[animation] ?? sheet.animations.idle;
   const [animatedFrame, setAnimatedFrame] = useState(0);
 
   useEffect(() => {
     setAnimatedFrame(0);
-    if (!selected || (DIRECTIONAL_ANIMATIONS.includes(animation) && !animateMovement)
+    if (!selected || (DIRECTIONAL_ANIMATIONS.includes(animation) && !animateFrames)
       || frameOverride !== undefined || selected.frames.length < 2) return;
 
     let currentFrame = 0;
@@ -35,11 +35,11 @@ export function PixelSprite({ animation, className = '', direction, frameOverrid
       setAnimatedFrame(currentFrame);
     }, selected.frameMs);
     return () => window.clearInterval(timer);
-  }, [animateMovement, animation, frameOverride, selected]);
+  }, [animateFrames, animation, frameOverride, selected]);
 
   if (!selected) return null;
   const usesDirection = DIRECTIONAL_ANIMATIONS.includes(animation);
-  const requestedIndex = frameOverride ?? (usesDirection && animateMovement
+  const requestedIndex = frameOverride ?? (usesDirection && animateFrames
     ? animatedFrame : direction && usesDirection
     ? DIRECTION_FRAME[direction]
     : usesDirection ? 0 : animatedFrame);

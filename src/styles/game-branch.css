@@ -26,8 +26,10 @@
   color: #efd2a7;
   letter-spacing: .1em;
 }
+.castle-fork button:nth-child(2) { border-color: #9c7c4f; background: #241a0c; color: #ffe2a3; }
 
 .branch-route { background: #050404; }
+.branch-route--middle { background: #070604; }
 .branch-route::after {
   background: radial-gradient(circle 380px at 50% 50%, #6d482526, #020202e8 78%);
 }
@@ -112,10 +114,48 @@
   letter-spacing: .12em;
 }
 
+.branch-prince-carried {
+  position: absolute;
+  z-index: 100;
+  width: 68px;
+  height: 86px;
+  translate: -50% -155%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(4px 6px 3px #000b);
+  pointer-events: none;
+}
+
+.branch-chasing-monster {
+  position: absolute;
+  left: 50%;
+  bottom: -220px;
+  z-index: 118;
+  width: 165px;
+  height: 220px;
+  translate: -50% 0;
+  animation: branch-monster-catch 4.2s cubic-bezier(.15,.7,.15,1) forwards;
+}
+.branch-chasing-monster strong { position: absolute; left: 50%; top: -34px; width: 220px; translate: -50% 0; color: #ff5b43; text-align: center; text-shadow: 0 0 12px #f00; }
+.branch-boss { position: absolute; left: 68%; top: 55%; z-index: 112; width: 190px; height: 230px; translate: -50% -50%; filter: drop-shadow(0 0 18px #a31d12); }
+.branch-boss > i { position: absolute; left: 12%; right: 12%; top: -18px; height: 8px; border: 1px solid #8e5447; background: #100; }
+.branch-boss > i span { display: block; height: 100%; background: #b5352a; transition: width 220ms steps(3); }
+.branch-boss--dead { height: 125px; filter: grayscale(1) brightness(.6); }
+.branch-message { position: absolute; left: 50%; top: 18%; z-index: 140; translate: -50% 0; padding: 11px 16px; border: 1px solid #a17a46; background: #0d0905e8; color: #f0d39a; letter-spacing: .13em; box-shadow: 4px 4px 0 #000; }
+
+@keyframes branch-monster-catch {
+  0% { bottom: -220px; scale: .65; filter: brightness(.55); }
+  65% { bottom: 13%; scale: .9; }
+  100% { bottom: 36%; scale: 1.35; filter: brightness(1.4) drop-shadow(0 0 18px #c22); }
+}
+
 @media (max-width: 560px) {
   .castle-fork { padding: 20px 14px; }
   .castle-fork div { width: 100%; flex-direction: column; }
   .branch-room::after { left: 12%; right: 12%; }
   .branch-wall { width: 12%; }
   .branch-hud { left: 12px; translate: 0; flex-direction: column; gap: 3px; }
+  .branch-boss { left: 72%; width: 130px; height: 175px; }
+  .branch-prince-carried { width: 52px; height: 68px; }
+  .branch-message { top: 14%; max-width: 76vw; font-size: 9px; text-align: center; }
 }

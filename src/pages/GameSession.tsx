@@ -395,6 +395,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   const completeBranch = useCallback(() => setCompleted(true), []);
   if (branchRoute) {
     return <BranchRoute route={branchRoute} initialDistance={branchDistance} completed={completed}
+      weapon={weapon} onSwitchWeapon={switchWeapon}
       onComplete={completeBranch} onProgress={setBranchDistance}
       onRestart={onRestart} onExitMenu={onExitMenu} />;
   }
