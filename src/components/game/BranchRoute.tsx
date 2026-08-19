@@ -23,11 +23,17 @@ type Props = { route: BranchRouteName; initialDistance?: number; completed: bool
   weapon: Weapon; onSwitchWeapon: () => void; onComplete: () => void; onExitMenu: () => void;
   onProgress: (distance: number) => void; onRestart: () => void; onReturnToFork: () => void };
 
+const GOOD_ENDING: DialogueLine[] = [
+  { speaker: 'king', emotion: 'surprised', text: 'Сын?.. Неужели это ты?' },
+  { speaker: 'king', emotion: 'happy', text: 'Ты спас меня. Мы выбрались — и это главное.' },
+  { speaker: 'knight', emotion: 'talking', text: 'Мы ушли до того, как замок окончательно проглотил нас.' },
+  { speaker: 'king', emotion: 'happy', text: 'Вместе. На этот раз никто не остался позади.' },
+];
 const TRUE_ENDING: DialogueLine[] = [
-  { speaker: 'king', emotion: 'surprised', text: 'Сын?.. Ты здесь. Значит, было поздно.' },
-  { speaker: 'king', emotion: 'sad', text: 'Мой сын... его уже не спасти. Мы всё равно уходим отсюда.' },
-  { speaker: 'knight', emotion: 'talking', text: 'Пора уходить. Замок уже съедает нас сам.' },
-  { speaker: 'king', emotion: 'afraid', text: 'Да. Все. Теперь — прочь отсюда, пока тьма не закрылась.' },
+  { speaker: 'king', emotion: 'surprised', text: 'Сын!.. Ты жив. Я не думал, что увижу тебя снова.' },
+  { speaker: 'king', emotion: 'happy', text: 'О, сын мой! Ты спас и меня, и себя. Мы уходим вместе.' },
+  { speaker: 'knight', emotion: 'talking', text: 'Он нашёл тебя. Теперь вы оба — с нами.' },
+  { speaker: 'king', emotion: 'happy', text: 'Да. Ни один из нас не останется здесь. Мы уходим все вместе.' },
 ];
 const FIGHT_INTRO: DialogueLine[] = [
   { speaker: 'king', emotion: 'afraid', text: 'Стой! Мы не можем уйти — нужно найти моего сына!' },
@@ -129,7 +135,7 @@ export function BranchRoute(props: Props) {
     {phase === 'rescued' && <div className="branch-message">ПРИНЦ НАЙДЕН · ВЕРНИСЬ К КОРОЛЮ</div>}
     {phase === 'main-hall' && <div className="branch-message">ГЛАВНЫЙ ЗАЛ · ПОДОЙДИ К КОРОЛЮ</div>}
     {phase === 'fight' && <div className="branch-message">МЕЧ: 20 УДАРОВ · АРБАЛЕТ: 60 ВЫСТРЕЛОВ</div>}
-    {phase === 'king' && <DialogueBox lines={TRUE_ENDING} onFinish={() => setPhase('reunited')} />}
+    {phase === 'king' && <DialogueBox lines={props.route === 'down' ? TRUE_ENDING : GOOD_ENDING} onFinish={() => setPhase('reunited')} />}
     {phase === 'fight-intro' && <DialogueBox lines={FIGHT_INTRO} onFinish={() => setPhase('fight')} />}
     {phase === 'fight-end' && <DialogueBox lines={FIGHT_END} onFinish={finish} />}
     <TouchControls onMove={controls.move} onAttack={controls.attack} />
