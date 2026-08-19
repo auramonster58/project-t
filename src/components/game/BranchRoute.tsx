@@ -16,7 +16,7 @@ import { TouchControls } from './TouchControls';
 import { ThroneHallDecor } from './ThroneHallDecor';
 import { WeaponSwitch } from './WeaponSwitch';
 
-type Phase = 'travel' | 'chase' | 'rescued' | 'main-hall' | 'king'
+type Phase = 'travel' | 'chase' | 'rescued' | 'main-hall' | 'king' | 'reunited'
   | 'fight-intro' | 'fight' | 'fight-end' | 'ending';
 type Props = { route: BranchRouteName; initialDistance?: number; completed: boolean;
   princeRescued: boolean;
@@ -24,10 +24,10 @@ type Props = { route: BranchRouteName; initialDistance?: number; completed: bool
   onProgress: (distance: number) => void; onRestart: () => void; onReturnToFork: () => void };
 
 const TRUE_ENDING: DialogueLine[] = [
-  { speaker: 'king', emotion: 'surprised', text: 'Сын?.. Неужели это ты?' },
-  { speaker: 'king', emotion: 'happy', text: 'О, сын мой! Я так долго тебя искал!' },
-  { speaker: 'knight', emotion: 'talking', text: 'Встреча состоялась. Теперь уходим — замок рушится.' },
-  { speaker: 'king', emotion: 'happy', text: 'Вместе. На этот раз никто не останется здесь один.' },
+  { speaker: 'king', emotion: 'surprised', text: 'Сын?.. Ты здесь. Значит, было поздно.' },
+  { speaker: 'king', emotion: 'sad', text: 'Мой сын... его уже не спасти. Мы всё равно уходим отсюда.' },
+  { speaker: 'knight', emotion: 'talking', text: 'Пора уходить. Замок уже съедает нас сам.' },
+  { speaker: 'king', emotion: 'afraid', text: 'Да. Все. Теперь — прочь отсюда, пока тьма не закрылась.' },
 ];
 const FIGHT_INTRO: DialogueLine[] = [
   { speaker: 'king', emotion: 'afraid', text: 'Стой! Мы не можем уйти — нужно найти моего сына!' },
@@ -60,7 +60,7 @@ export function BranchRoute(props: Props) {
     if (phase !== 'travel') return;
     if (props.route === 'up' && controls.distance <= 20) setPhase('chase');
     if (props.route === 'down' && controls.distance >= 480) setPhase('rescued');
-    if (props.route === 'middle' && controls.distance >= 480) setPhase('fight-intro');
+    if (props.route === 'middle' && controls.distance >= 480) setPhase('main-hall');
   }, [controls.distance, phase, props.route]);
   useEffect(() => {
     if (phase === 'rescued' && controls.distance <= 20) props.onReturnToFork();
@@ -71,6 +71,11 @@ export function BranchRoute(props: Props) {
   useEffect(() => {
     if (phase !== 'chase') return;
     const timer = window.setTimeout(() => { setPhase('ending'); props.onComplete(); }, 4200);
+    return () => window.clearTimeout(timer);
+  }, [phase, props.onComplete]);
+  useEffect(() => {
+    if (phase !== 'reunited') return;
+    const timer = window.setTimeout(() => { setPhase('ending'); props.onComplete(); }, 1800);
     return () => window.clearTimeout(timer);
   }, [phase, props.onComplete]);
   useEffect(() => {
@@ -85,7 +90,7 @@ export function BranchRoute(props: Props) {
 
   const finish = () => { setPhase('ending'); props.onComplete(); };
   const rooms = Array.from({ length: 5 }, (_, index) => props.route === 'up' ? 5 - index : index + 1);
-  const carriesPrince = (props.route === 'down' && phase === 'rescued')
+  const princeFollows = (props.route === 'down' && phase === 'rescued')
     || (props.route === 'middle' && props.princeRescued
       && ['main-hall', 'king', 'ending'].includes(phase));
   const playerScreenY = phase === 'main-hall' || phase === 'king' ? 68 : screenY;
@@ -107,19 +112,24 @@ export function BranchRoute(props: Props) {
     </div>
     <header className="branch-hud"><strong>{props.route === 'middle' ? 'СРЕДНИЙ' : props.route === 'up' ? 'ВЕРХНИЙ' : 'НИЖНИЙ'} ПУТЬ</strong><span>КОМНАТА {controls.room} / 5</span></header>
     <button className="exit-menu-button" onClick={props.onExitMenu}>ВЫЙТИ В МЕНЮ</button>
-    {carriesPrince && <BranchPrince carried left={viewportWidth * controls.lane / 100} top={`${playerScreenY}%`} />}
+    {princeFollows && <BranchPrince following facing={controls.direction === 'left' ? -1 : 1}
+      isMoving={controls.isMoving}
+      left={viewportWidth * controls.lane / 100 - (controls.direction === 'left' ? -72 : 72)}
+      top={`${playerScreenY}%`} />}
     <Knight weapon={props.weapon} screenX={viewportWidth * controls.lane / 100} y={playerScreenY}
       facing={controls.direction === 'left' ? -1 : 1} direction={controls.direction} health={100}
       isMoving={controls.isMoving} isRunning={phase === 'chase'} isAttacking={controls.isAttacking}
       isBlocking={false} isVictorious={phase === 'ending' && props.route !== 'up'} attackSequence={controls.attackSequence} />
     {phase === 'chase' && <div className="branch-chasing-monster"><PixelSprite sheet={chasingSkeleton32BitSheet} animation="run" animateFrames /><strong>ЧТО-ТО ПРИБЛИЖАЕТСЯ · ПРЯЧЬТЕСЬ</strong></div>}
-    {isReunionHall && ['main-hall', 'king'].includes(phase)
+    {isReunionHall && ['main-hall', 'king', 'reunited'].includes(phase)
       && <div className="branch-return-king"><StationaryKing /></div>}
+    {isReunionHall && phase === 'reunited'
+      && <BranchPrince standing left={viewportWidth * .64} top="68%" />}
     {['fight-intro', 'fight', 'fight-end'].includes(phase) && <><StationaryKing /><div className={`branch-boss ${monsterHealth === 0 ? 'branch-boss--dead' : ''}`}><PixelSprite sheet={horrorMonsterSheet} animation={monsterHealth === 0 ? 'dead' : phase === 'fight' ? 'attack1' : 'idle'} /><i><span style={{ width: `${monsterHealth / 60 * 100}%` }} /></i></div></>}
     {phase === 'rescued' && <div className="branch-message">ПРИНЦ НАЙДЕН · ВЕРНИСЬ К КОРОЛЮ</div>}
     {phase === 'main-hall' && <div className="branch-message">ГЛАВНЫЙ ЗАЛ · ПОДОЙДИ К КОРОЛЮ</div>}
     {phase === 'fight' && <div className="branch-message">МЕЧ: 20 УДАРОВ · АРБАЛЕТ: 60 ВЫСТРЕЛОВ</div>}
-    {phase === 'king' && <DialogueBox lines={TRUE_ENDING} onFinish={finish} />}
+    {phase === 'king' && <DialogueBox lines={TRUE_ENDING} onFinish={() => setPhase('reunited')} />}
     {phase === 'fight-intro' && <DialogueBox lines={FIGHT_INTRO} onFinish={() => setPhase('fight')} />}
     {phase === 'fight-end' && <DialogueBox lines={FIGHT_END} onFinish={finish} />}
     <TouchControls onMove={controls.move} onAttack={controls.attack} />

@@ -15,7 +15,7 @@
 .knight--dead { width: clamp(165px, 15vw, 205px); height: clamp(100px, 9vw, 120px); }
 .knight--dead { transform: translate(-50%, -100%) scaleX(var(--facing)); animation: custom-player-death 820ms steps(8) forwards; }
 .knight--victory { width: clamp(145px, 13vw, 175px); height: clamp(185px, 18vw, 220px); }
-.knight--idle { animation: custom-breathe 1.2s steps(4) infinite; }
+.knight--idle { animation: none; }
 .knight--damage { animation: custom-player-hit 380ms steps(5); }
 .knight--walk { animation: custom-player-walk 420ms steps(4) infinite; }
 .knight--run { animation: custom-player-run 260ms steps(4) infinite; }

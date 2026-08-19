@@ -116,6 +116,14 @@ button.small { padding: 6px 10px; font-size: 14px; }
 .castle-home__button { display: flex; align-items: center; gap: 24px; margin-top: 10px; padding: 15px 22px; border: 1px solid #e0c72b; border-radius: 2px; background: #0c0b02cc; color: #fff6b0; font-size: 12px; font-weight: 800; letter-spacing: .16em; box-shadow: inset 0 0 18px #e6c80014, 0 0 15px #d4b90035; animation: home-reveal 700ms 2.5s both; }
 .castle-home__button:hover { border-color: #fff16d; box-shadow: inset 0 0 24px #ffe6002e, 0 0 28px #e8cb0055; }
 .castle-home__button b { color: #ffe642; font-size: 20px; }
+.castle-home__qr-panel { display: flex; align-items: center; gap: 20px; margin-top: 14px; padding: 16px 18px; border: 1px solid rgba(255, 206, 90, 0.45); background: rgba(15, 11, 6, 0.85); box-shadow: inset 0 0 18px rgba(255, 173, 60, 0.12), 0 0 22px rgba(255, 170, 76, 0.12); animation: home-reveal 700ms 2.85s both; }
+.castle-home__qr { display: grid; width: 118px; height: 118px; place-items: center; padding: 8px; border: 1px solid rgba(255, 213, 107, 0.6); background: #fffdf8; }
+.castle-home__qr img { display: block; width: 100%; height: 100%; object-fit: contain; background: #fff; }
+.castle-home__qr-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-align: left; }
+.castle-home__qr-copy strong { color: #ffd76d; font-size: 11px; letter-spacing: .18em; }
+.castle-home__qr-copy a { color: #e6d7b1; font-size: 12px; letter-spacing: .08em; text-decoration: underline; text-underline-offset: 4px; }
+.castle-home__copy-button { padding: 9px 12px; border: 1px solid rgba(255, 216, 109, 0.7); background: rgba(25, 19, 10, 0.9); color: #fff2b4; font-size: 10px; letter-spacing: .14em; }
+.castle-home__copy-button:hover { border-color: #ffe08a; }
 .neon-patterns { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; color: #ffc62e; }
 .neon-patterns i { position: absolute; display: block; font-style: normal; filter: drop-shadow(0 0 4px #ffd21f) drop-shadow(0 0 13px #ff6a00); opacity: .72; }
 .neon-corner { width: min(30vw, 390px); height: min(30vw, 390px); border: 2px solid currentColor; rotate: 45deg; animation: neon-breathe 2.8s ease-in-out infinite alternate; }
@@ -145,6 +153,11 @@ button.small { padding: 6px 10px; font-size: 14px; }
 @media (max-width: 700px) {
   .castle-home__content { padding: 24px; }
   .castle-home h1 { font-size: clamp(42px, 16vw, 74px); }
+  .castle-home__qr-panel { flex-direction: column; align-items: center; width: min(92vw, 320px); padding: 14px 12px; }
+  .castle-home__qr { width: 110px; height: 110px; }
+  .castle-home__qr-copy { align-items: center; text-align: center; }
+  .castle-home__qr-copy a { font-size: 11px; }
+  .castle-home__copy-button { width: 100%; }
   .neon-diamond--a { left: -5%; }.neon-diamond--b { right: -4%; }
   .neon-zigzag { scale: .7; }.neon-orbit--a { left: -18%; }
 }

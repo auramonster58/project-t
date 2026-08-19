@@ -93,24 +93,24 @@
 }
 
 .branch-room--main-hall {
-  background-color: #34302a;
+  background-color: #5f5147;
   background-image:
-    radial-gradient(ellipse at 50% 40%, #ffe4a952, transparent 62%),
-    linear-gradient(135deg, transparent 44%, #b792601d 45% 47%, transparent 48%),
-    repeating-linear-gradient(0deg, transparent 0 52px, #171411 52px 57px),
-    repeating-linear-gradient(90deg, #39342e 0 91px, #75634e 92px 95px, #292521 96px 100px);
+    radial-gradient(ellipse at 50% 38%, rgba(255, 245, 196, 1), rgba(255, 226, 146, 0.6) 20%, rgba(237, 195, 116, 0.2) 30%, transparent 44%),
+    linear-gradient(135deg, transparent 44%, rgba(255, 201, 112, 0.26) 45% 47%, transparent 48%),
+    repeating-linear-gradient(0deg, transparent 0 52px, rgba(33, 26, 20, 0.7) 52px 57px),
+    repeating-linear-gradient(90deg, #5a4a3d 0 91px, #9a7a5f 92px 95px, #3c332e 96px 100px);
   background-size: 100% 100%, 220px 160px, 100% 57px, 200px 114px;
-  box-shadow: inset 0 0 75px #20150b88;
+  box-shadow: inset 0 0 120px rgba(255, 212, 128, 0.42), inset 0 0 35px rgba(255, 237, 172, 0.24);
 }
 .branch-room--main-hall::after {
   inset: 76% 0 0;
   border: 0;
-  background-color: #292723;
-  background-image: linear-gradient(110deg, transparent 42%, #a68b641f 43% 45%, transparent 46%),
-    repeating-linear-gradient(0deg, transparent 0 52px, #151310 52px 57px),
-    repeating-linear-gradient(90deg, #38332d 0 91px, #77654e 92px 95px, #27231f 96px 101px);
+  background-color: rgba(66, 53, 44, 0.9);
+  background-image: linear-gradient(110deg, transparent 42%, rgba(230, 191, 120, 0.28) 43% 45%, transparent 46%),
+    repeating-linear-gradient(0deg, transparent 0 52px, rgba(20, 15, 12, 0.76) 52px 57px),
+    repeating-linear-gradient(90deg, #564a3f 0 91px, #9f7f65 92px 95px, #332d29 96px 101px);
   background-size: 230px 170px, 100% 57px, 202px 114px;
-  box-shadow: inset 0 18px 24px #3c2b1d88;
+  box-shadow: inset 0 18px 28px rgba(90, 64, 35, 0.72);
 }
 .branch-room--main-hall .branch-wall {
   border-color: #252019;
@@ -164,7 +164,7 @@
 
 .branch-prince {
   position: absolute;
-  z-index: 103;
+  z-index: 100;
   pointer-events: none;
 }
 
@@ -180,8 +180,11 @@
 .branch-prince--waiting { left: 50%; top: 92%; translate: -50% -100%; }
 .branch-prince--waiting img { width: 92px; height: 118px; }
 .branch-prince--waiting span { display: block; margin-top: -8px; color: #e7c878; font-size: 10px; letter-spacing: .16em; text-align: center; text-shadow: 2px 2px #000; }
-.branch-prince--carried { translate: -58% -142%; }
-.branch-prince--carried::after { position: absolute; left: 45%; bottom: 12%; width: 38px; height: 7px; rotate: -12deg; border: 2px solid #8e7049; background: #3c291d; content: ''; box-shadow: 2px 2px 0 #0009; }
+.branch-prince--following { translate: -50% -100%; transform: scaleX(var(--prince-facing)); }
+.branch-prince--following img { width: 72px; height: 92px; }
+.branch-prince--following.branch-prince--moving { animation: prince-follow-step 280ms steps(2) infinite alternate; }
+.branch-prince--standing { translate: -50% -100%; }
+.branch-prince--standing img { width: 82px; height: 106px; }
 
 .branch-chasing-monster {
   position: absolute;
@@ -206,6 +209,7 @@
   65% { bottom: 13%; scale: .9; }
   100% { bottom: 36%; scale: 1.35; filter: brightness(1.4) drop-shadow(0 0 18px #c22); }
 }
+@keyframes prince-follow-step { to { translate: -50% calc(-100% - 4px); } }
 
 @media (max-width: 560px) {
   .castle-fork { width: min(92vw, 420px); max-height: calc(100dvh - 24px); padding: 16px 12px; overflow-y: auto; }

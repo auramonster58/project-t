@@ -1,17 +1,22 @@
 type BranchPrinceProps = {
-  carried?: boolean;
+  following?: boolean;
+  standing?: boolean;
+  facing?: 1 | -1;
+  isMoving?: boolean;
   left?: number;
   top?: string;
 };
 
-export function BranchPrince({ carried = false, left, top }: BranchPrinceProps) {
+export function BranchPrince({ following = false, standing = false, facing = 1,
+  isMoving = false, left, top }: BranchPrinceProps) {
+  const mode = following ? 'following' : standing ? 'standing' : 'waiting';
   return (
     <div
-      className={carried ? 'branch-prince branch-prince--carried' : 'branch-prince branch-prince--waiting'}
-      style={{ left, top }}
+      className={`branch-prince branch-prince--${mode} ${isMoving ? 'branch-prince--moving' : ''}`}
+      style={{ left, top, '--prince-facing': facing } as React.CSSProperties}
     >
-      <img src="/assets/rescued-prince.png" alt={carried ? 'Спасённый принц' : 'Принц ждёт помощи'} />
-      {!carried && <span>ПРИНЦ</span>}
+      <img src="/assets/rescued-prince.png" alt="Спасённый принц" />
+      {!following && !standing && <span>ПРИНЦ</span>}
     </div>
   );
 }

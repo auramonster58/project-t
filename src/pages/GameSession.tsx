@@ -3,6 +3,7 @@ import { AbilityBar } from '../components/game/AbilityBar';
 import { AmbushMonster } from '../components/game/AmbushMonster';
 import { ArrowShot } from '../components/game/ArrowShot';
 import { BranchRoute } from '../components/game/BranchRoute';
+import { BranchPrince } from '../components/game/BranchPrince';
 import { CastleFork } from '../components/game/CastleFork';
 import { CastleScene } from '../components/game/CastleScene';
 import { DialogueBox } from '../components/game/DialogueBox';
@@ -448,6 +449,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
         hermesActive={abilities.hermesActive} canHeal={player.health > 0 && player.health < 100}
         onPrimary={abilities.activatePrimary} onHeal={abilities.activateHeal} onUtility={abilities.activateUtility} />
       <div className={`${player.isImmune ? 'player-immune' : ''} ${hidingWardrobeId !== null ? 'player-hidden' : ''}`}>
+        {princeRescued && <BranchPrince following facing={controls.facing} isMoving={controls.isMoving}
+          left={controls.screenX - controls.facing * 72} top={`${controls.y}%`} />}
         <Knight weapon={weapon} screenX={controls.screenX} y={controls.y} facing={controls.facing}
           direction={controls.direction}
           health={player.health} isMoving={controls.isMoving} isRunning={controls.isMoving && abilities.hermesActive}
