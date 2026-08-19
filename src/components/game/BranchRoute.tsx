@@ -102,10 +102,11 @@ export function BranchRoute(props: Props) {
   const playerScreenY = phase === 'main-hall' || phase === 'king' ? 68 : screenY;
   const ending = props.route === 'up'
     ? { title: 'МОНСТР ДОГНАЛ ТЕБЯ', subtitle: 'Из верхнего пути не было выхода' }
-    : props.route === 'down'
+    : props.route === 'down' || props.princeRescued
       ? { title: 'ИСТИННАЯ КОНЦОВКА', subtitle: 'Король и принц снова вместе. Вы покинули замок.' }
       : { title: 'ХОРОШАЯ КОНЦОВКА', subtitle: 'Король понял цену каждой минуты в проклятом замке.' };
 
+  const isTrueEndingDialogue = props.route === 'down' || props.princeRescued;
   const isReunionHall = props.route === 'middle' && props.princeRescued;
   return <main className={`game-page branch-route branch-route--${props.route} ${isReunionHall ? 'branch-route--reunion' : ''}`}>
     <div className="branch-world" style={{ transformOrigin: '0 0', transform: `translate3d(0, ${-cameraY * viewScale}px, 0) scale(${viewScale})` }}>
@@ -135,7 +136,7 @@ export function BranchRoute(props: Props) {
     {phase === 'rescued' && <div className="branch-message">ПРИНЦ НАЙДЕН · ВЕРНИСЬ К КОРОЛЮ</div>}
     {phase === 'main-hall' && <div className="branch-message">ГЛАВНЫЙ ЗАЛ · ПОДОЙДИ К КОРОЛЮ</div>}
     {phase === 'fight' && <div className="branch-message">МЕЧ: 20 УДАРОВ · АРБАЛЕТ: 60 ВЫСТРЕЛОВ</div>}
-    {phase === 'king' && <DialogueBox lines={props.route === 'down' ? TRUE_ENDING : GOOD_ENDING} onFinish={() => setPhase('reunited')} />}
+    {phase === 'king' && <DialogueBox lines={isTrueEndingDialogue ? TRUE_ENDING : GOOD_ENDING} onFinish={() => setPhase('reunited')} />}
     {phase === 'fight-intro' && <DialogueBox lines={FIGHT_INTRO} onFinish={() => setPhase('fight')} />}
     {phase === 'fight-end' && <DialogueBox lines={FIGHT_END} onFinish={finish} />}
     <TouchControls onMove={controls.move} onAttack={controls.attack} />
