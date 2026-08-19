@@ -4,20 +4,24 @@ import { useGameViewScale } from '../../hooks/useGameViewScale';
 import type { DialogueLine } from '../../lib/kingDialogue';
 import type { Weapon } from '../../lib/gameCombat';
 import type { BranchRoute as BranchRouteName } from '../../lib/gameSave';
-import { horrorMonsterSheet } from '../../lib/spriteData';
+import { chasingSkeleton32BitSheet, horrorMonsterSheet } from '../../lib/spriteData';
 import { DialogueBox } from './DialogueBox';
+import { BranchPrince } from './BranchPrince';
 import { GameResult } from './GameResult';
 import { Knight } from './Knight';
 import { PixelSprite } from './PixelSprite';
 import { RoomDecor } from './RoomDecor';
 import { StationaryKing } from './StationaryKing';
 import { TouchControls } from './TouchControls';
+import { ThroneHallDecor } from './ThroneHallDecor';
 import { WeaponSwitch } from './WeaponSwitch';
 
-type Phase = 'travel' | 'chase' | 'rescued' | 'king' | 'fight-intro' | 'fight' | 'fight-end' | 'ending';
+type Phase = 'travel' | 'chase' | 'rescued' | 'main-hall' | 'king'
+  | 'fight-intro' | 'fight' | 'fight-end' | 'ending';
 type Props = { route: BranchRouteName; initialDistance?: number; completed: boolean;
+  princeRescued: boolean;
   weapon: Weapon; onSwitchWeapon: () => void; onComplete: () => void; onExitMenu: () => void;
-  onProgress: (distance: number) => void; onRestart: () => void };
+  onProgress: (distance: number) => void; onRestart: () => void; onReturnToFork: () => void };
 
 const TRUE_ENDING: DialogueLine[] = [
   { speaker: 'king', emotion: 'surprised', text: 'Сын?.. Неужели это ты?' },
@@ -36,10 +40,12 @@ const FIGHT_END: DialogueLine[] = [
 ];
 
 export function BranchRoute(props: Props) {
-  const [phase, setPhase] = useState<Phase>('travel');
+  const [phase, setPhase] = useState<Phase>(
+    props.route === 'middle' && props.princeRescued ? 'main-hall' : 'travel',
+  );
   const [monsterHealth, setMonsterHealth] = useState(60);
-  const canControl = phase === 'travel' || phase === 'rescued' || phase === 'fight';
-  const controls = useBranchControls(props.route, props.initialDistance, canControl);
+  const canControl = phase === 'travel' || phase === 'rescued' || phase === 'main-hall' || phase === 'fight';
+  const controls = useBranchControls(props.route, props.initialDistance, canControl, phase === 'main-hall');
   const previousAttack = useRef(controls.attackSequence);
   const viewScale = useGameViewScale();
   const viewportHeight = typeof window === 'undefined' ? 800 : window.innerHeight;
@@ -57,8 +63,11 @@ export function BranchRoute(props: Props) {
     if (props.route === 'middle' && controls.distance >= 480) setPhase('fight-intro');
   }, [controls.distance, phase, props.route]);
   useEffect(() => {
-    if (phase === 'rescued' && controls.distance <= 20) setPhase('king');
-  }, [controls.distance, phase]);
+    if (phase === 'rescued' && controls.distance <= 20) props.onReturnToFork();
+  }, [controls.distance, phase, props.onReturnToFork]);
+  useEffect(() => {
+    if (phase === 'main-hall' && Math.abs(controls.lane - 75) <= 6) setPhase('king');
+  }, [controls.lane, phase]);
   useEffect(() => {
     if (phase !== 'chase') return;
     const timer = window.setTimeout(() => { setPhase('ending'); props.onComplete(); }, 4200);
@@ -76,29 +85,39 @@ export function BranchRoute(props: Props) {
 
   const finish = () => { setPhase('ending'); props.onComplete(); };
   const rooms = Array.from({ length: 5 }, (_, index) => props.route === 'up' ? 5 - index : index + 1);
-  const carriesPrince = props.route === 'down' && ['rescued', 'king', 'ending'].includes(phase);
+  const carriesPrince = (props.route === 'down' && phase === 'rescued')
+    || (props.route === 'middle' && props.princeRescued
+      && ['main-hall', 'king', 'ending'].includes(phase));
+  const playerScreenY = phase === 'main-hall' || phase === 'king' ? 68 : screenY;
   const ending = props.route === 'up'
     ? { title: 'МОНСТР ДОГНАЛ ТЕБЯ', subtitle: 'Из верхнего пути не было выхода' }
     : props.route === 'down'
       ? { title: 'ИСТИННАЯ КОНЦОВКА', subtitle: 'Король и принц снова вместе. Вы покинули замок.' }
       : { title: 'ХОРОШАЯ КОНЦОВКА', subtitle: 'Король понял цену каждой минуты в проклятом замке.' };
 
-  return <main className={`game-page branch-route branch-route--${props.route}`}>
+  const isReunionHall = props.route === 'middle' && props.princeRescued;
+  return <main className={`game-page branch-route branch-route--${props.route} ${isReunionHall ? 'branch-route--reunion' : ''}`}>
     <div className="branch-world" style={{ transformOrigin: '0 0', transform: `translate3d(0, ${-cameraY * viewScale}px, 0) scale(${viewScale})` }}>
-      {rooms.map((room) => <section className="branch-room" key={room}><RoomDecor room={room} />
+      {rooms.map((room, index) => <section className={`branch-room ${isReunionHall && index === 0 ? 'branch-room--main-hall' : ''}`} key={room}><RoomDecor room={room} />
+        {isReunionHall && index === 0 && <ThroneHallDecor />}
         <i className="branch-wall branch-wall--left" /><i className="branch-wall branch-wall--right" />
-        <span>ВЕТКА · КОМНАТА {room}</span><b>{props.route === 'up' ? '↑' : props.route === 'down' ? '↓' : '→'}</b></section>)}
+        <span>{isReunionHall && index === 0 ? 'ГЛАВНЫЙ ЗАЛ' : `ВЕТКА · КОМНАТА ${room}`}</span><b>{props.route === 'up' ? '↑' : props.route === 'down' ? '↓' : '→'}</b>
+        {props.route === 'down' && index === rooms.length - 1 && phase === 'travel' && <BranchPrince />}
+      </section>)}
     </div>
     <header className="branch-hud"><strong>{props.route === 'middle' ? 'СРЕДНИЙ' : props.route === 'up' ? 'ВЕРХНИЙ' : 'НИЖНИЙ'} ПУТЬ</strong><span>КОМНАТА {controls.room} / 5</span></header>
     <button className="exit-menu-button" onClick={props.onExitMenu}>ВЫЙТИ В МЕНЮ</button>
-    {carriesPrince && <img className="branch-prince-carried" src="/assets/rescued-prince.png" alt="Принц на спине рыцаря" style={{ left: viewportWidth * controls.lane / 100, top: `${screenY}%` }} />}
-    <Knight weapon={props.weapon} screenX={viewportWidth * controls.lane / 100} y={screenY}
+    {carriesPrince && <BranchPrince carried left={viewportWidth * controls.lane / 100} top={`${playerScreenY}%`} />}
+    <Knight weapon={props.weapon} screenX={viewportWidth * controls.lane / 100} y={playerScreenY}
       facing={controls.direction === 'left' ? -1 : 1} direction={controls.direction} health={100}
       isMoving={controls.isMoving} isRunning={phase === 'chase'} isAttacking={controls.isAttacking}
       isBlocking={false} isVictorious={phase === 'ending' && props.route !== 'up'} attackSequence={controls.attackSequence} />
-    {phase === 'chase' && <div className="branch-chasing-monster"><PixelSprite sheet={horrorMonsterSheet} animation="run" direction="up" /><strong>ОН ДОГОНЯЕТ!</strong></div>}
+    {phase === 'chase' && <div className="branch-chasing-monster"><PixelSprite sheet={chasingSkeleton32BitSheet} animation="run" animateFrames /><strong>ЧТО-ТО ПРИБЛИЖАЕТСЯ · ПРЯЧЬТЕСЬ</strong></div>}
+    {isReunionHall && ['main-hall', 'king'].includes(phase)
+      && <div className="branch-return-king"><StationaryKing /></div>}
     {['fight-intro', 'fight', 'fight-end'].includes(phase) && <><StationaryKing /><div className={`branch-boss ${monsterHealth === 0 ? 'branch-boss--dead' : ''}`}><PixelSprite sheet={horrorMonsterSheet} animation={monsterHealth === 0 ? 'dead' : phase === 'fight' ? 'attack1' : 'idle'} /><i><span style={{ width: `${monsterHealth / 60 * 100}%` }} /></i></div></>}
     {phase === 'rescued' && <div className="branch-message">ПРИНЦ НАЙДЕН · ВЕРНИСЬ К КОРОЛЮ</div>}
+    {phase === 'main-hall' && <div className="branch-message">ГЛАВНЫЙ ЗАЛ · ПОДОЙДИ К КОРОЛЮ</div>}
     {phase === 'fight' && <div className="branch-message">МЕЧ: 20 УДАРОВ · АРБАЛЕТ: 60 ВЫСТРЕЛОВ</div>}
     {phase === 'king' && <DialogueBox lines={TRUE_ENDING} onFinish={finish} />}
     {phase === 'fight-intro' && <DialogueBox lines={FIGHT_INTRO} onFinish={() => setPhase('fight')} />}

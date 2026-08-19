@@ -30,6 +30,11 @@
 
 .branch-route { background: #050404; }
 .branch-route--middle { background: #070604; }
+.branch-route--reunion { background: #8a6a46; }
+.branch-route--reunion::after { display: none; }
+.branch-route--reunion .branch-room {
+  box-shadow: inset 0 0 55px #2c1d1066;
+}
 .branch-route::after {
   background: radial-gradient(circle 380px at 50% 50%, #6d482526, #020202e8 78%);
 }
@@ -87,6 +92,49 @@
   text-shadow: 0 0 24px #b7432738;
 }
 
+.branch-room--main-hall {
+  background-color: #34302a;
+  background-image:
+    radial-gradient(ellipse at 50% 40%, #ffe4a952, transparent 62%),
+    linear-gradient(135deg, transparent 44%, #b792601d 45% 47%, transparent 48%),
+    repeating-linear-gradient(0deg, transparent 0 52px, #171411 52px 57px),
+    repeating-linear-gradient(90deg, #39342e 0 91px, #75634e 92px 95px, #292521 96px 100px);
+  background-size: 100% 100%, 220px 160px, 100% 57px, 200px 114px;
+  box-shadow: inset 0 0 75px #20150b88;
+}
+.branch-room--main-hall::after {
+  inset: 76% 0 0;
+  border: 0;
+  background-color: #292723;
+  background-image: linear-gradient(110deg, transparent 42%, #a68b641f 43% 45%, transparent 46%),
+    repeating-linear-gradient(0deg, transparent 0 52px, #151310 52px 57px),
+    repeating-linear-gradient(90deg, #38332d 0 91px, #77654e 92px 95px, #27231f 96px 101px);
+  background-size: 230px 170px, 100% 57px, 202px 114px;
+  box-shadow: inset 0 18px 24px #3c2b1d88;
+}
+.branch-room--main-hall .branch-wall {
+  border-color: #252019;
+  background-color: #34302a;
+  background-image: repeating-linear-gradient(0deg, transparent 0 52px, #171411 52px 57px),
+    repeating-linear-gradient(90deg, #39342e 0 91px, #75634e 92px 95px, #292521 96px 100px);
+  box-shadow: inset 0 0 22px #1d140c88;
+}
+
+.branch-room--main-hall > span { color: #d4ad72; text-shadow: 0 0 12px #b57832; }
+.throne-hall { position: absolute; inset: 0; z-index: 2; overflow: hidden; }
+.throne-hall__windows { position: absolute; inset: 8% 16% 38%; display: flex; justify-content: space-around; }
+.throne-hall__windows i { width: 18%; border: 8px solid #6e563b; border-radius: 48% 48% 3px 3px; background: linear-gradient(90deg, transparent 47%, #8d704c 48% 52%, transparent 53%), linear-gradient(transparent 48%, #8d704c 49% 53%, transparent 54%), radial-gradient(circle at 50% 38%, #fffbd0, #9ed7e8 46%, #54798f 75%); box-shadow: 0 0 45px #ffeeb477, inset 0 0 20px #fff9d0; }
+.throne-hall__columns { position: absolute; inset: 0 9% 18%; display: flex; justify-content: space-between; }
+.throne-hall__columns i { width: 7%; border-inline: 7px solid #7b6246; background: repeating-linear-gradient(90deg, #8e7557 0 9px, #c0a77b 10px 15px, #655039 16px 22px); box-shadow: 8px 0 12px #0006; }
+.throne-hall__carpet { position: absolute; left: 24%; right: 16%; bottom: 0; height: 27%; border-inline: 7px solid #c39a4d; background: #7b2530; box-shadow: inset 0 0 22px #3b0b12, 0 0 12px #2d1a10; }
+.throne-hall__carpet::before, .throne-hall__carpet::after { position: absolute; top: 24%; width: 18%; height: 58%; border: 4px solid #b58b49; background: #5e2029; content: ''; }
+.throne-hall__carpet::before { left: 12%; }.throne-hall__carpet::after { right: 12%; }
+.throne-hall__throne { position: absolute; right: 18%; bottom: 25%; width: 150px; height: 210px; border: 9px solid #8b6b32; border-radius: 45% 45% 5px 5px; background: linear-gradient(90deg, #361014, #7c2630 48%, #361014); box-shadow: 0 12px 0 #26170c, 0 0 25px #e6bd5b55; }
+.throne-hall__throne i { position: absolute; left: -24px; right: -24px; bottom: -20px; height: 58px; border: 7px solid #7c5f31; background: #5c1b23; }
+.throne-hall__throne span { position: absolute; left: 50%; top: 18px; translate: -50%; color: #e7c46b; font-size: 34px; text-shadow: 0 0 10px #ffe59a; }
+.branch-return-king { position: absolute; inset: 0; pointer-events: none; }
+.branch-return-king .stationary-king { left: 75%; top: 53%; }
+
 .branch-wall {
   position: absolute;
   top: 0;
@@ -114,17 +162,26 @@
   letter-spacing: .12em;
 }
 
-.branch-prince-carried {
+.branch-prince {
   position: absolute;
-  z-index: 100;
-  width: 68px;
-  height: 86px;
-  translate: -50% -155%;
-  object-fit: contain;
-  image-rendering: pixelated;
-  filter: drop-shadow(4px 6px 3px #000b);
+  z-index: 103;
   pointer-events: none;
 }
+
+.branch-prince img {
+  display: block;
+  width: 88px;
+  height: 112px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: brightness(1.12) drop-shadow(4px 6px 3px #000c) drop-shadow(0 0 5px #d6b77a66);
+}
+
+.branch-prince--waiting { left: 50%; top: 92%; translate: -50% -100%; }
+.branch-prince--waiting img { width: 92px; height: 118px; }
+.branch-prince--waiting span { display: block; margin-top: -8px; color: #e7c878; font-size: 10px; letter-spacing: .16em; text-align: center; text-shadow: 2px 2px #000; }
+.branch-prince--carried { translate: -58% -142%; }
+.branch-prince--carried::after { position: absolute; left: 45%; bottom: 12%; width: 38px; height: 7px; rotate: -12deg; border: 2px solid #8e7049; background: #3c291d; content: ''; box-shadow: 2px 2px 0 #0009; }
 
 .branch-chasing-monster {
   position: absolute;
@@ -136,6 +193,7 @@
   translate: -50% 0;
   animation: branch-monster-catch 4.2s cubic-bezier(.15,.7,.15,1) forwards;
 }
+.branch-chasing-monster .pixel-sprite { filter: contrast(1.15) brightness(.82) drop-shadow(0 8px 7px #000); }
 .branch-chasing-monster strong { position: absolute; left: 50%; top: -34px; width: 220px; translate: -50% 0; color: #ff5b43; text-align: center; text-shadow: 0 0 12px #f00; }
 .branch-boss { position: absolute; left: 68%; top: 55%; z-index: 112; width: 190px; height: 230px; translate: -50% -50%; filter: drop-shadow(0 0 18px #a31d12); }
 .branch-boss > i { position: absolute; left: 12%; right: 12%; top: -18px; height: 8px; border: 1px solid #8e5447; background: #100; }
@@ -150,12 +208,20 @@
 }
 
 @media (max-width: 560px) {
-  .castle-fork { padding: 20px 14px; }
+  .castle-fork { width: min(92vw, 420px); max-height: calc(100dvh - 24px); padding: 16px 12px; overflow-y: auto; }
   .castle-fork div { width: 100%; flex-direction: column; }
+  .castle-fork button { min-height: 44px; padding: 9px; }
   .branch-room::after { left: 12%; right: 12%; }
   .branch-wall { width: 12%; }
-  .branch-hud { left: 12px; translate: 0; flex-direction: column; gap: 3px; }
+  .branch-hud { top: max(8px, env(safe-area-inset-top)); left: 8px; translate: 0; flex-direction: column; gap: 2px; padding: 7px 9px; }
   .branch-boss { left: 72%; width: 130px; height: 175px; }
-  .branch-prince-carried { width: 52px; height: 68px; }
+  .branch-prince img { width: 68px; height: 86px; }
+  .branch-prince--waiting img { width: 72px; height: 92px; }
+  .branch-return-king .stationary-king { left: 76%; top: 55%; width: 145px; height: 205px; }
+  .throne-hall__throne { right: 6%; bottom: 27%; width: 92px; height: 138px; }
+  .throne-hall__windows { inset: 10% 7% 42%; }
+  .throne-hall__windows i { border-width: 5px; }
+  .throne-hall__columns { inset-inline: 4%; }
+  .throne-hall__carpet { left: 16%; right: 8%; height: 25%; }
   .branch-message { top: 14%; max-width: 76vw; font-size: 9px; text-align: center; }
 }

@@ -1,6 +1,6 @@
 .metal-hunter { position: absolute; z-index: 91; width: 150px; height: 190px; translate: -50% -88%; pointer-events: none; }
-.hunter-body { position: absolute; inset: 0; transform: scaleX(var(--hunter-facing)); filter: drop-shadow(0 10px 8px #000) drop-shadow(0 0 11px #b51f15); animation: hunter-rattle 180ms steps(2) infinite alternate; }
-.hunter-body img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; clip-path: polygon(18% 0, 82% 0, 96% 100%, 4% 100%); filter: contrast(1.25) brightness(.72); }
+.hunter-body { position: absolute; inset: -28px -42px 0; transform: scaleX(var(--hunter-facing)); filter: drop-shadow(0 10px 8px #000) drop-shadow(0 0 11px #b51f15); }
+.hunter-body .pixel-sprite { filter: contrast(1.18) brightness(.78); }
 .hunter-vision { position: absolute; left: 57px; top: 38px; z-index: -1; width: 620px; height: 230px; transform: scaleX(var(--hunter-facing)); transform-origin: 0 50%; clip-path: polygon(0 44%, 100% 0, 100% 100%, 0 56%); background: linear-gradient(90deg, #e13a152d, #ffca1820 70%, transparent); border-radius: 50%; }
 .metal-hunter small { position: absolute; left: 50%; top: -26px; translate: -50% 0; color: #d66d5f; font-size: 9px; letter-spacing: .15em; white-space: nowrap; }
 .hunter-warning { position: absolute; left: 50%; top: 24%; z-index: 140; translate: -50% 0; color: #ffb08e; font-size: clamp(13px, 3vw, 22px); letter-spacing: .18em; text-align: center; text-shadow: 0 0 12px #f00; animation: warning-pulse .45s infinite alternate; }

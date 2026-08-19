@@ -7,6 +7,7 @@
 .knight { width: clamp(125px, 11vw, 150px); height: clamp(175px, 17vw, 205px); transform: translate(-50%, -100%) scaleX(var(--model-facing, 1)); }
 .knight.knight--sword { width: clamp(210px, 19vw, 240px); height: clamp(210px, 19vw, 240px); }
 .knight.knight--crossbow { width: clamp(220px, 20vw, 250px); height: clamp(200px, 18vw, 230px); }
+.knight > .pixel-sprite { translate: 0 12px; }
 .knight--attack1, .knight--attack2, .knight--attack3, .knight--attack4 { width: clamp(175px, 15vw, 210px); height: clamp(158px, 15vw, 185px); transform-origin: 50% 100%; }
 .knight--damage { width: clamp(112px, 10vw, 135px); height: clamp(158px, 15vw, 180px); }
 .knight--block { width: clamp(120px, 10.5vw, 142px); height: clamp(175px, 17vw, 202px); }
@@ -30,7 +31,7 @@
 .knight-shadow { left: 50%; width: clamp(76px, 7vw, 92px); height: 7px; translate: -50% 0; border-radius: 0; filter: none; background: #000b; }
 
 .stationary-king { position: absolute; left: 54%; top: 48%; width: 230px; height: 310px; z-index: 24; translate: -50% -50%; pointer-events: none; }
-.stationary-king img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; mix-blend-mode: screen; filter: contrast(1.35) saturate(1.08); }
+.stationary-king img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; filter: contrast(1.2) saturate(1.05); }
 .stationary-king span { position: absolute; left: 50%; bottom: -20px; translate: -50% 0; padding: 3px 8px; color: #e7c878; border: 1px solid #8f7138; background: #090705dd; box-shadow: 3px 3px 0 #000; font-size: 11px; white-space: nowrap; }
 
 .gate-guard { width: 116px; height: 166px; transition: left 80ms linear, top 80ms linear, opacity 180ms steps(2); transform: translate(-50%, -100%); }
@@ -40,6 +41,10 @@
 .gate-guard--dead { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
 .gate-guard--guard .pixel-sprite { filter: grayscale(.25) brightness(.78); }
 .gate-guard--archer { transform: translate(-50%, -100%) scaleX(var(--enemy-facing)); }
+.gate-guard--archer.gate-guard--walk { width: 115px; height: 200px; }
+.gate-guard--archer.gate-guard--attack1 { width: 195px; height: 165px; }
+.gate-guard--archer.gate-guard--damage { width: 110px; height: 155px; }
+.gate-guard--archer.gate-guard--dead { width: 169px; height: 145px; }
 .gate-guard--archer .pixel-sprite { filter: brightness(.82) sepia(.15); }
 .gate-guard--monster { width: 118px; height: 172px; }
 .gate-guard--monster .pixel-sprite { filter: brightness(.9) sepia(.18); }
@@ -111,6 +116,10 @@
   .knight--damage { width: 98px; height: 140px; }
   .knight--block { width: 103px; height: 155px; }
   .gate-guard { width: 86px; height: 126px; }.gate-guard--attack1, .gate-guard--attack2 { width: 130px; }
+  .gate-guard--archer.gate-guard--walk { width: 86px; height: 150px; }
+  .gate-guard--archer.gate-guard--attack1 { width: 145px; height: 123px; }
+  .gate-guard--archer.gate-guard--damage { width: 82px; height: 116px; }
+  .gate-guard--archer.gate-guard--dead { width: 126px; height: 108px; }
   .stationary-king { width: 170px; height: 235px; }
 }
 

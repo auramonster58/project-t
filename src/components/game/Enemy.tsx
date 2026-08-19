@@ -49,8 +49,7 @@ export function Enemy(props: EnemyProps) {
         && <span className="local-enemy-health"><i style={{ width: `${enemy.health}%` }} /></span>}
       <PixelSprite animation={animation}
         direction={enemy.kind !== 'archer' ? (displayedFacing < 0 ? 'left' : 'right') : undefined}
-        frameOverride={enemy.kind === 'archer' && animation === 'idle' ? 1 : undefined}
-        sheet={sheet} />
+        sheet={sheet} animateFrames={enemy.health > 0} />
       {(attackPhase === 'windup' || attackPhase === 'hit')
         && <span className="guard-attack-effect">{attackPhase === 'windup' ? '!' : '−12'}</span>}
     </div>

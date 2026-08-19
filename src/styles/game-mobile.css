@@ -109,6 +109,20 @@
   }
 }
 
+@media (pointer: coarse) and (max-width: 420px) {
+  .touch-controls .move-pad {
+    width: 156px;
+    height: 156px;
+    grid-template: repeat(3, 52px) / repeat(3, 52px);
+  }
+
+  .touch-controls button { width: 52px; height: 52px; font-size: 21px; }
+  .touch-controls .attack-button { width: 62px; height: 62px; font-size: 26px; }
+  .ability-bar { bottom: 118px; }
+  .ability-button { width: 56px; min-height: 52px; }
+  .weapon-switch { bottom: 72px; min-height: 42px; }
+}
+
 @media (pointer: coarse) and (orientation: landscape) and (max-height: 520px) {
   .ability-bar {
     bottom: max(10px, env(safe-area-inset-bottom));

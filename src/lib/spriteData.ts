@@ -108,6 +108,15 @@ export const restoredCrossbowKnightSheet: SpriteSheet = {
   },
 };
 
+export const chasingSkeleton32BitSheet: SpriteSheet = {
+  src: '/assets/chasing-skeleton-32bit-sheet.png', width: 1024, height: 1536,
+  animations: {
+    idle: animation([{ x: 400, y: 35, width: 115, height: 190 }], 180),
+    walk: animation(row([400, 535, 670, 805], 235, 115, 200), 120),
+    run: animation(row([400, 535, 670, 805], 445, 115, 185), 85),
+  },
+};
+
 export const swordsmanGuardSheet: SpriteSheet = {
   src: '/assets/swordsman-guard-sheet-transparent.png', width: 1024, height: 1536,
   animations: {

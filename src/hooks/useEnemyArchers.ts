@@ -49,8 +49,9 @@ export function useEnemyArchers(
       enemiesRef.current.forEach((enemy) => {
         const lastShot = lastShots.current.get(enemy.id) ?? 0;
         const canSeePlayer = enemy.kind === 'archer' && enemy.health > 0
-          && enemy.room <= unlockedRoom && combatDistance(player.x, player.y, enemy) <= ARCHER_RANGE
-          && Math.abs(enemy.y - player.y) <= 5;
+          && enemy.room === Math.floor(player.x / ROOM_WIDTH) && enemy.room <= unlockedRoom
+          && combatDistance(player.x, player.y, enemy) <= ARCHER_RANGE
+          && Math.abs(enemy.y - player.y) <= 9;
         if (!canSeePlayer || now - lastShot < SHOT_COOLDOWN_MS) return;
         lastShots.current.set(enemy.id, now);
         setShootingArchers((current) => new Set(current).add(enemy.id));
@@ -64,9 +65,9 @@ export function useEnemyArchers(
         }, 560);
         effectTimers.current.add(shootingTimer);
         const id = nextArrowId.current += 1;
-        const target = { x: player.x, y: enemy.y };
+        const target = { x: player.x, y: player.y };
         setEnemyArrows((current) => [...current, {
-          id, x: enemy.x, y: enemy.y, targetX: target.x, targetY: enemy.y,
+          id, x: enemy.x, y: enemy.y, targetX: target.x, targetY: target.y,
           flightMs: ARROW_FLIGHT_MS, hostile: true,
         }]);
         const arrowTimer = window.setTimeout(() => {

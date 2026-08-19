@@ -83,6 +83,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   const [completionVisible, setCompletionVisible] = useState(false);
   const [branchRoute, setBranchRoute] = useState<BranchRouteName | null>(null);
   const [branchDistance, setBranchDistance] = useState<number>();
+  const [princeRescued, setPrinceRescued] = useState(false);
   const [achievementStats, setAchievementStats] = useState<AchievementStats>(
     () => ({ ...EMPTY_ACHIEVEMENT_STATS }),
   );
@@ -393,8 +394,15 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   }, [controls.attack]);
 
   const completeBranch = useCallback(() => setCompleted(true), []);
+  const returnToForkWithPrince = useCallback(() => {
+    setPrinceRescued(true);
+    setBranchDistance(undefined);
+    setBranchRoute(null);
+    controls.teleport(FORK_POSITION - 120, 52);
+  }, [controls.teleport]);
   if (branchRoute) {
     return <BranchRoute route={branchRoute} initialDistance={branchDistance} completed={completed}
+      princeRescued={princeRescued} onReturnToFork={returnToForkWithPrince}
       weapon={weapon} onSwitchWeapon={switchWeapon}
       onComplete={completeBranch} onProgress={setBranchDistance}
       onRestart={onRestart} onExitMenu={onExitMenu} />;
@@ -456,7 +464,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
       </aside>}
       {dialogueOpen && <DialogueBox lines={KING_DIALOGUE} onFinish={finishKingDialogue} />}
       {ambush.phase === 'hunting' && <div className="ambush-warning">ЗАСАДА · ОНИ ИДУТ С ДВУХ СТОРОН</div>}
-      {metalHunter.phase === 'warning' && <div className="hunter-warning">СКРЕЖЕТ МЕТАЛЛА И КОСТЕЙ<br />ПОГОНЯ ЧЕРЕЗ 3 СЕКУНДЫ</div>}
+      {metalHunter.phase === 'warning' && <div className="hunter-warning">ЧТО-ТО ПРИБЛИЖАЕТСЯ<br />ПРЯЧЬТЕСЬ</div>}
       {metalHunter.skillCheck && <HunterSkillCheck state={metalHunter.skillCheck}
         onBegin={metalHunter.beginSkillCheck} />}
       {ambush.phase === 'fake-death' && <FakeDeathOverlay weapon={weapon} />}
@@ -466,7 +474,7 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
         originX={(FIFTH_HALL_CHEST.x - controls.cameraX) * viewScale} originY={FIFTH_HALL_CHEST.y} />}
       <QuestNoteOverlay open={fifthQuest.noteOpen} />
       {unlockedRoom > FORK_ROOM_INDEX && controls.worldX >= FORK_POSITION - 160
-        && <CastleFork onChoose={setBranchRoute} />}
+        && <CastleFork onChoose={(route) => { setBranchDistance(undefined); setBranchRoute(route); }} />}
       {scarePhase === 'defeat' && <GameResult title="suiuiiuuiuiuiuiuiuiu" subtitle="ТЫ УМЕР"
         bloody onRestart={onRestart} onExitMenu={onExitMenu} />}
       {completionVisible && <GameResult title="ЗАМОК ПРОЙДЕН" subtitle="Ты достиг Круга судьбы"
