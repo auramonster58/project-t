@@ -116,14 +116,15 @@ export function useKnightControls(
     if (!instantAttack) window.setTimeout(() => { attackLocked.current = false; }, 460);
   }, [instantAttack, onStrike]);
 
-  const move = useCallback((directionX: -1 | 0 | 1, directionY: -1 | 0 | 1) => {
+  const move = useCallback((directionX: -1 | 0 | 1, directionY: -1 | 0 | 1, stepScale = 1) => {
     if (!canControlRef.current) return;
     setIsMoving(Boolean(directionX || directionY));
     if (directionX) setFacing(directionX);
     if (directionY) setDirection(directionY < 0 ? 'up' : 'down');
     else if (directionX) setDirection(directionX < 0 ? 'left' : 'right');
     setWorldX((value) => {
-      const next = Math.min(maxXRef.current, Math.max(80, value + directionX * 35 * speedMultiplier));
+      const next = Math.min(maxXRef.current,
+        Math.max(80, value + directionX * 35 * speedMultiplier * stepScale));
       const passageMove = moveIntoPassages(value, next, position.current.y, roomWidth, worldWidth);
       const doorMove = moveThroughDoors(value, passageMove, position.current.y, roomWidth, worldWidth);
       const upperRoomMove = keepInsideUpperRoom(doorMove, position.current.y, roomWidth);
@@ -131,7 +132,8 @@ export function useKnightControls(
     });
     setY((value) => {
       const bounds = verticalBoundsAtPosition(position.current.worldX, value, roomWidth, upperRoomUnlocked);
-      const next = Math.min(bounds.max, Math.max(bounds.min, value + directionY * 4 * speedMultiplier));
+      const next = Math.min(bounds.max,
+        Math.max(bounds.min, value + directionY * 4 * speedMultiplier * stepScale));
       const doorMove = moveBesideDoors(position.current.worldX, next, roomWidth, worldWidth);
       return isBlockedByEnemy(position.current.worldX, doorMove, blockersRef.current) ? value : doorMove;
     });

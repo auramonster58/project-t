@@ -26,8 +26,6 @@
 .knight--crossbow.knight--attack1 { animation: custom-crossbow-shot 160ms steps(2); }
 .knight--block { animation: custom-block 700ms steps(4) infinite alternate; }
 .knight--victory { animation: custom-victory 800ms steps(6) infinite alternate; }
-.knight--attack1 .attack-flash, .knight--attack2 .attack-flash { animation: flash 360ms steps(3) forwards; }
-.knight--crossbow .attack-flash { display: none; }
 .knight-shadow { left: 50%; width: clamp(76px, 7vw, 92px); height: 7px; translate: -50% 0; border-radius: 0; filter: none; background: #000b; }
 
 .stationary-king { position: absolute; left: 54%; top: 48%; width: 230px; height: 310px; z-index: 24; translate: -50% -50%; pointer-events: none; }

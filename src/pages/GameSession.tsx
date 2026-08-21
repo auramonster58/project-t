@@ -410,6 +410,11 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
   }
 
   const currentRoom = Math.min(FINAL_ROOM + 1, Math.floor(controls.worldX / ROOM_WIDTH) + 1);
+  const currentRoomIndex = currentRoom - 1;
+  const renderMinX = controls.cameraX - 350;
+  const renderMaxX = controls.cameraX + window.innerWidth / viewScale + 350;
+  const isNearViewport = (x: number) => x >= renderMinX && x <= renderMaxX;
+  const visibleEnemies = enemies.filter((enemy) => isNearViewport(enemy.x));
   const torchRoom = currentRoom <= 2 ? currentRoom - 1 : null;
   const torchLeftX = torchRoom === null ? 0 : (torchRoom * ROOM_WIDTH + 125 - controls.cameraX) * viewScale;
   const torchRightX = torchRoom === null ? 0 : ((torchRoom + 1) * ROOM_WIDTH - 125 - controls.cameraX) * viewScale;
@@ -417,9 +422,9 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
     <main className={`game-page ${torchRoom !== null ? 'game-page--torch-lit' : ''} ${weapon === 'sword' && abilities.owlSightActive ? 'game-page--owl-sight' : ''}`} style={{ '--light-x': `${controls.screenX}px`, '--light-y': `${controls.y}%`, '--world-scale': viewScale } as React.CSSProperties}>
       <div className="scrolling-world" style={{ width: WORLD_WIDTH, height: `${100 / viewScale}%`,
         transformOrigin: '0 0', transform: `translate3d(${-controls.cameraX * viewScale}px, 0, 0) scale(${viewScale})` }}>
-        <CastleScene unlockedRoom={unlockedRoom} ambushResolved={ambush.resolved}
+        <CastleScene unlockedRoom={unlockedRoom} currentRoom={currentRoomIndex} ambushResolved={ambush.resolved}
           decoyGuardsReleased={decoyGuardsReleased} />
-        {enemies.map((enemy) => <Enemy key={enemy.id} enemy={enemy} facing={enemy.x > controls.worldX ? -1 : 1}
+        {visibleEnemies.map((enemy) => <Enemy key={enemy.id} enemy={enemy} facing={enemy.x > controls.worldX ? -1 : 1}
           isTargeted={nearestIsVisible && nearestEnemy.id === enemy.id}
           attackPhase={guardAttacks[enemy.id] ?? 'idle'}
           isShooting={shootingArchers.has(enemy.id)}
@@ -428,8 +433,8 @@ export function GameSession({ onRestart, onExitMenu, bossMode = false, userId }:
         {ambush.ambushers.map((monster) => <AmbushMonster key={monster.id} monster={monster} bossMode={bossMode} />)}
         {metalHunter.phase === 'chase' && <MetalHunter {...metalHunter.position} facing={metalHunter.facing} />}
         <FifthHallQuest state={fifthQuest.state} monster={fifthQuest.monster} />
-        {traps.map((trap) => <CastleTrap key={trap.id} x={trap.x} y={trap.y} />)}
-        {WARDROBES.map((wardrobe) => <Wardrobe key={wardrobe.id} {...wardrobe}
+        {traps.filter((trap) => isNearViewport(trap.x)).map((trap) => <CastleTrap key={trap.id} x={trap.x} y={trap.y} />)}
+        {WARDROBES.filter((wardrobe) => isNearViewport(wardrobe.x)).map((wardrobe) => <Wardrobe key={wardrobe.id} {...wardrobe}
           occupied={hidingWardrobeId === wardrobe.id} />)}
         {arrows.map((arrow) => <ArrowShot key={arrow.id} arrow={arrow} />)}
         {enemyArrows.map((arrow) => <ArrowShot key={arrow.id} arrow={arrow} />)}

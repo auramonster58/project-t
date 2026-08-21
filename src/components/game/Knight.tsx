@@ -46,7 +46,6 @@ export function Knight(props: KnightProps) {
       '--model-facing': modelFacing, '--attack-shift': `${facing * 24}px`,
       '--hit-shift': `${facing * -8}px`,
       zIndex: 101 } as React.CSSProperties}>
-      <span className="attack-flash" />
       <PixelSprite animation={animation} sheet={sheet} animateFrames={animation !== 'idle'} />
       <span className="knight-shadow" />
     </div>
